@@ -45,6 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if let code = RedAPI.shared.getCodeFrom(url: url) {
             print(code)
+            RedAPI.shared.getAccessToken(code: code, callback: { (json) in
+                print(json)
+            })
             return true
         }
         print("Error @ Oauth")
