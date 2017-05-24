@@ -13,8 +13,14 @@ typealias JSON = [String: AnyObject]
 class RedAPI {
     
     static let shared = RedAPI()
+    let kAuthURL = "https://ssl.reddit.com/api/v1/authorize?client_id=sog6MOSPP1E2EQ&response_type=code&state=TEST&redirect_uri=autoscrollRed://blank&duration=permanent&scope=read"
     private let kAccessTokenEndPoint = "https://www.reddit.com/api/v1/access_token"
     private let kClientID = "sog6MOSPP1E2EQ"
+    
+    private var kAccessToken = ""
+    private var kRefreshToken = ""
+    private var isAccessTokenSet = false
+    private var isRefreshTokenSet = false
 
     func getCodeFrom(url: URL) -> String? {
         guard let queryParams = url.query?.components(separatedBy: "&")
@@ -66,8 +72,28 @@ class RedAPI {
                 print(error.debugDescription)
             }
         }).resume()
-
     }
     
+    func setAccessToken(_ json: JSON) {
+        guard let token = json["access_token"] as? String
+        else {
+            print("ERROR: JSON doesn't contain access token")
+            return
+        }
+        
+        kAccessToken = token
+        isAccessTokenSet = true
+    }
+    
+    func setRefreshToken(_ json: JSON) {
+        guard let token = json["refresh_token"] as? String
+            else {
+                print("ERROR: JSON doesn't contain access token")
+                return
+        }
+        
+        kRefreshToken = token
+        isRefreshTokenSet = true
+    }
     
 }

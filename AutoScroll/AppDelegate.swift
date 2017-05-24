@@ -47,6 +47,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print(code)
             RedAPI.shared.getAccessToken(code: code, callback: { (json) in
                 print(json)
+                RedAPI.shared.setAccessToken(json)
+                RedAPI.shared.setRefreshToken(json)
             })
             return true
         }
