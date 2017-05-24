@@ -49,6 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print(json)
                 RedAPI.shared.setAccessToken(json)
                 RedAPI.shared.setRefreshToken(json)
+                RedAPI.shared.getHotListing()
             })
             return true
         }

@@ -16,6 +16,7 @@ class RedAPI {
     let kAuthURL = "https://ssl.reddit.com/api/v1/authorize?client_id=sog6MOSPP1E2EQ&response_type=code&state=TEST&redirect_uri=autoscrollRed://blank&duration=permanent&scope=read"
     private let kAccessTokenEndPoint = "https://www.reddit.com/api/v1/access_token"
     private let kClientID = "sog6MOSPP1E2EQ"
+    private let kRedditAPIEndPoint = "https://oauth.reddit.com"
     
     private var kAccessToken = ""
     private var kRefreshToken = ""
@@ -68,6 +69,44 @@ class RedAPI {
                     return
                 }
                 callback(json)
+            } catch let error as NSError {
+                print(error.debugDescription)
+            }
+        }).resume()
+    }
+    
+    func getHotListing() {
+        let token = kAccessToken
+        let loginString = String(format: "%@", token)
+        let loginData = loginString.data(using: String.Encoding.utf8)!
+        let base64LoginString = loginData.base64EncodedString()
+
+        let url = URL(string: kRedditAPIEndPoint + "/hot")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("bearer \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        
+//        let myParams = "raw_json=1"
+//        let postData = myParams.data(using: .utf8, allowLossyConversion: true)
+//        request.httpBody = postData
+        print("---")
+        let session = URLSession.shared
+        session.dataTask(with: request, completionHandler: { (returnData, response, error) -> Void in
+            do {
+                let status = (response as! HTTPURLResponse).statusCode
+                print("response status: \(status)")
+                
+                guard let data = returnData else {
+                    print("ERROR: Returned data is nil")
+                    return
+                }
+                
+                guard let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as? JSON else {
+                    print("ERROR: JSON is nil")
+                    return
+                }
+                
+                print(json)
             } catch let error as NSError {
                 print(error.debugDescription)
             }
