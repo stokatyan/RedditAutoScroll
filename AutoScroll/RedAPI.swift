@@ -84,7 +84,7 @@ class RedAPI {
         let url = URL(string: kRedditAPIEndPoint + "/hot")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("bearer \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        request.setValue("bearer \(kAccessToken)", forHTTPHeaderField: "Authorization")
         
 //        let myParams = "raw_json=1"
 //        let postData = myParams.data(using: .utf8, allowLossyConversion: true)
