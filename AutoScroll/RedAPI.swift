@@ -75,38 +75,25 @@ class RedAPI {
         }).resume()
     }
     
-    func getHotListing() {
-        let token = kAccessToken
-        let loginString = String(format: "%@", token)
-        let loginData = loginString.data(using: String.Encoding.utf8)!
-        let base64LoginString = loginData.base64EncodedString()
-
-        let url = URL(string: kRedditAPIEndPoint + "/hot")!
+    func getHotListing(callback: @escaping (JSON) -> ()) {
+        let url = URL(string: kRedditAPIEndPoint + "/hot?limit=3")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("bearer \(kAccessToken)", forHTTPHeaderField: "Authorization")
         
-//        let myParams = "raw_json=1"
-//        let postData = myParams.data(using: .utf8, allowLossyConversion: true)
-//        request.httpBody = postData
-        print("---")
         let session = URLSession.shared
         session.dataTask(with: request, completionHandler: { (returnData, response, error) -> Void in
             do {
-                let status = (response as! HTTPURLResponse).statusCode
-                print("response status: \(status)")
-                
                 guard let data = returnData else {
                     print("ERROR: Returned data is nil")
                     return
                 }
-                
                 guard let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as? JSON else {
                     print("ERROR: JSON is nil")
                     return
                 }
                 
-                print(json)
+                callback(json)
             } catch let error as NSError {
                 print(error.debugDescription)
             }
