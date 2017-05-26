@@ -100,6 +100,23 @@ class RedAPI {
         }).resume()
     }
     
+    func getPostsFromListing(listing: JSON) -> [RPost]? {
+        guard let data = listing["data"] as? JSON else {
+            return nil;
+        }
+        guard let children = data["children"] as? [JSON] else {
+            return nil;
+        }
+        
+        var posts = [RPost]()
+        for child in children {
+            if let post = child["data"] as? JSON {
+                posts.append(RPost(post))
+            }
+        }
+        return posts
+    }
+    
     func setAccessToken(_ json: JSON) {
         guard let token = json["access_token"] as? String
         else {

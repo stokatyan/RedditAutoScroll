@@ -50,7 +50,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 RedAPI.shared.setAccessToken(json)
                 RedAPI.shared.setRefreshToken(json)
                 RedAPI.shared.getHotListing(callback: { (json) in
-                    print(json)
+                    if let posts = RedAPI.shared.getPostsFromListing(listing: json) {
+                        for post in posts {
+                            post.rPrint()
+                        }
+                    } else {
+                        print("no posts")
+                    }
                 })
             })
             return true
