@@ -18,7 +18,22 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        UIApplication.shared.open(URL(string:RedAPI.shared.kAuthURL)!, options: [:], completionHandler: nil)
+        RedAPI.shared.refreshAccessToken { (succesful) in
+            if (succesful) {
+                RedAPI.shared.getHotListing(callback: { (json) in
+                    if let posts = RedAPI.shared.getPosts(json) {
+                        for post in posts {
+                            post.rPrint()
+                        }
+                    } else {
+                        print("no posts")
+                    }
+                })
+            } else {
+                UIApplication.shared.open(URL(string:RedAPI.shared.kAuthURL)!, options: [:], completionHandler: nil)
+            }
+        }
+        
 
     }
 
@@ -26,9 +41,6 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    
-
 
 }
 

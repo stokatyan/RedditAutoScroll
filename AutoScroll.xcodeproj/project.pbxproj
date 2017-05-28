@@ -13,6 +13,7 @@
 		455E8F701ECBDA02006E0B26 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 455E8F6F1ECBDA02006E0B26 /* Assets.xcassets */; };
 		455E8F731ECBDA02006E0B26 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 455E8F711ECBDA02006E0B26 /* LaunchScreen.storyboard */; };
 		455E8F7F1ECBDE23006E0B26 /* RedAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455E8F7E1ECBDE23006E0B26 /* RedAPI.swift */; };
+		45C298CF1EDA571B00DFFD07 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C298CE1EDA571B00DFFD07 /* Memory.swift */; };
 		45C9D22C1ED66C7500A8E647 /* RPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C9D22B1ED66C7500A8E647 /* RPost.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		455E8F721ECBDA02006E0B26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		455E8F741ECBDA02006E0B26 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		455E8F7E1ECBDE23006E0B26 /* RedAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedAPI.swift; sourceTree = "<group>"; };
+		45C298CE1EDA571B00DFFD07 /* Memory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
 		45C9D22B1ED66C7500A8E647 /* RPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RPost.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +75,7 @@
 		45C9D22A1ED66C5400A8E647 /* Data Objects */ = {
 			isa = PBXGroup;
 			children = (
+				45C298CE1EDA571B00DFFD07 /* Memory.swift */,
 				45C9D22B1ED66C7500A8E647 /* RPost.swift */,
 			);
 			name = "Data Objects";
@@ -154,6 +157,7 @@
 				455E8F6B1ECBDA02006E0B26 /* ViewController.swift in Sources */,
 				455E8F7F1ECBDE23006E0B26 /* RedAPI.swift in Sources */,
 				45C9D22C1ED66C7500A8E647 /* RPost.swift in Sources */,
+				45C298CF1EDA571B00DFFD07 /* Memory.swift in Sources */,
 				455E8F691ECBDA02006E0B26 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

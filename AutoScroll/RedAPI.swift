@@ -18,10 +18,11 @@ class RedAPI {
     private let kClientID = "sog6MOSPP1E2EQ"
     private let kRedditAPIEndPoint = "https://oauth.reddit.com"
     
-    private var kAccessToken = ""
-    private var kRefreshToken = ""
-    private var isAccessTokenSet = false
-    private var isRefreshTokenSet = false
+    private var accessToken: String?
+    private var refreshToken: String?
+    
+    
+    // MARK: Get Access from Reddit
 
     func getCodeFrom(url: URL) -> String? {
         guard let queryParams = url.query?.components(separatedBy: "&")
@@ -59,20 +60,98 @@ class RedAPI {
                 guard let data = returnData else { return }
                 guard let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as? JSON else { return }
                 
-                RedAPI.shared.setAccessToken(json)
-                RedAPI.shared.setRefreshToken(json)
-                callback(json)
+                if (RedAPI.shared.setAccessToken(json) &&
+                    RedAPI.shared.setRefreshToken(json)) {
+                    callback(json)
+                } else {
+                    print("ERROR: Invalid JSON for access token")
+                }
+                
             } catch let error as NSError {
                 print(error.debugDescription)
             }
         }).resume()
     }
     
+    func refreshAccessToken(callback: @escaping (Bool) -> ()) {
+        getTokens()
+        if (refreshToken == nil) {
+            callback(false)
+            return
+        }
+        let username = kClientID
+        let password = ""
+        let loginString = String(format: "%@:%@", username, password)
+        let loginData = loginString.data(using: String.Encoding.utf8)!
+        let base64LoginString = loginData.base64EncodedString()
+        let url = URL(string: kAccessTokenEndPoint)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+        let myParams = "grant_type=refresh_token&refresh_token=\(refreshToken!)"
+        let postData = myParams.data(using: .utf8, allowLossyConversion: true)
+        request.httpBody = postData
+        
+        let session = URLSession.shared
+        session.dataTask(with: request, completionHandler: { (returnData, response, error) -> Void in
+            do {
+                guard let data = returnData else { return }
+                guard let json = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions()) as? JSON else { return }
+                
+                if (RedAPI.shared.setAccessToken(json)) {
+                    callback(true)
+                } else {
+                    print("ERROR: Invalid JSON for access token")
+                    callback(false)
+                }
+
+            } catch let error as NSError {
+                print(error.debugDescription)
+            }
+        }).resume()
+    }
+    
+    // MARK: Save get and set access tokens from persistent memory
+    
+    func getTokens() {
+        accessToken = UserDefaults.standard.string(forKey: Memory.kAccessToken)
+        refreshToken = UserDefaults.standard.string(forKey: Memory.kRefreshToken)
+    }
+    
+    func setAccessToken(_ json: JSON) -> Bool {
+        guard let token = json["access_token"] as? String
+            else {
+                print("ERROR: JSON doesn't contain access token")
+                return false
+        }
+        
+        accessToken = token
+        UserDefaults.standard.set(accessToken, forKey: Memory.kAccessToken)
+        return true
+    }
+    
+    func setRefreshToken(_ json: JSON) -> Bool {
+        guard let token = json["refresh_token"] as? String
+            else {
+                print("ERROR: JSON doesn't contain refresh token")
+                return false
+        }
+        
+        refreshToken = token
+        UserDefaults.standard.set(refreshToken, forKey: Memory.kRefreshToken)
+        return true
+    }
+    
+    // MARK: Get Posts
+    
     func getHotListing(callback: @escaping (JSON) -> ()) {
+        if (accessToken == nil) {
+            return 
+        }
         let url = URL(string: kRedditAPIEndPoint + "/hot?limit=3")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("bearer \(kAccessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("bearer \(accessToken!)", forHTTPHeaderField: "Authorization")
         
         let session = URLSession.shared
         session.dataTask(with: request, completionHandler: { (returnData, response, error) -> Void in
@@ -93,7 +172,7 @@ class RedAPI {
         }).resume()
     }
     
-    func getPostsFromListing(listing: JSON) -> [RPost]? {
+    func getPosts(_ listing: JSON) -> [RPost]? {
         guard let data = listing["data"] as? JSON else {
             return nil;
         }
@@ -110,26 +189,6 @@ class RedAPI {
         return posts
     }
     
-    func setAccessToken(_ json: JSON) {
-        guard let token = json["access_token"] as? String
-        else {
-            print("ERROR: JSON doesn't contain access token")
-            return
-        }
-        
-        kAccessToken = token
-        isAccessTokenSet = true
-    }
     
-    func setRefreshToken(_ json: JSON) {
-        guard let token = json["refresh_token"] as? String
-            else {
-                print("ERROR: JSON doesn't contain access token")
-                return
-        }
-        
-        kRefreshToken = token
-        isRefreshTokenSet = true
-    }
     
 }

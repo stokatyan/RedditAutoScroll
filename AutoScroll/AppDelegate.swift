@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             RedAPI.shared.getAccessToken(code: code, callback: { (json) in
                 print(json)
                 RedAPI.shared.getHotListing(callback: { (json) in
-                    if let posts = RedAPI.shared.getPostsFromListing(listing: json) {
+                    if let posts = RedAPI.shared.getPosts(json) {
                         for post in posts {
                             post.rPrint()
                         }
