@@ -42,21 +42,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-
+        let vc = self.window!.rootViewController as! HomeView
         if let code = RedAPI.shared.getCodeFrom(url: url) {
             print(code)
-            RedAPI.shared.getAccessToken(code: code, callback: { (json) in
-                print(json)
-                RedAPI.shared.getHotListing(callback: { (json) in
-                    if let posts = RedAPI.shared.getPosts(json) {
-                        for post in posts {
-                            post.rPrint()
-                        }
-                    } else {
-                        print("no posts")
-                    }
-                })
-            })
+            RedAPI.shared.getAccessToken(code: code) {succesful in
+                if(succesful) {
+                    vc.AccessTokenReceived()
+                } else {
+                    vc.FailedToReceivceAccess()
+                }
+            }
             return true
         }
         print("Error @ Oauth")

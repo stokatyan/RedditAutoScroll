@@ -20,9 +20,16 @@ class RedAPI {
     
     private var accessToken: String?
     private var refreshToken: String?
+    private let kAccessToken = "AccessToken"
+    private let kRefreshToken = "RefreshToken"
     
     
     // MARK: Get Access from Reddit
+    
+    func checkCurrentAccessToken() {
+        getTokens()
+        
+    }
 
     func getCodeFrom(url: URL) -> String? {
         guard let queryParams = url.query?.components(separatedBy: "&")
@@ -40,10 +47,8 @@ class RedAPI {
         return codeString
     }
     
-    func getAccessToken(code: String, callback: @escaping (JSON) -> ()) {
-        let username = kClientID
-        let password = ""
-        let loginString = String(format: "%@:%@", username, password)
+    func getAccessToken(code: String, callback: @escaping (Bool) -> ()) {
+        let loginString = String(format: "%@:%@", kClientID, "")
         let loginData = loginString.data(using: String.Encoding.utf8)!
         let base64LoginString = loginData.base64EncodedString()
         let url = URL(string: kAccessTokenEndPoint)!
@@ -62,8 +67,9 @@ class RedAPI {
                 
                 if (RedAPI.shared.setAccessToken(json) &&
                     RedAPI.shared.setRefreshToken(json)) {
-                    callback(json)
+                    callback(true)
                 } else {
+                    callback(false)
                     print("ERROR: Invalid JSON for access token")
                 }
                 
@@ -79,9 +85,7 @@ class RedAPI {
             callback(false)
             return
         }
-        let username = kClientID
-        let password = ""
-        let loginString = String(format: "%@:%@", username, password)
+        let loginString = String(format: "%@:%@", kClientID, "")
         let loginData = loginString.data(using: String.Encoding.utf8)!
         let base64LoginString = loginData.base64EncodedString()
         let url = URL(string: kAccessTokenEndPoint)!
@@ -111,14 +115,14 @@ class RedAPI {
         }).resume()
     }
     
-    // MARK: Save get and set access tokens from persistent memory
+    // MARK: Access tokens <-> persistent memory
     
     func getTokens() {
-        accessToken = UserDefaults.standard.string(forKey: Memory.kAccessToken)
-        refreshToken = UserDefaults.standard.string(forKey: Memory.kRefreshToken)
+        accessToken = UserDefaults.standard.string(forKey: kAccessToken)
+        refreshToken = UserDefaults.standard.string(forKey: kRefreshToken)
     }
     
-    func setAccessToken(_ json: JSON) -> Bool {
+    private func setAccessToken(_ json: JSON) -> Bool {
         guard let token = json["access_token"] as? String
             else {
                 print("ERROR: JSON doesn't contain access token")
@@ -126,11 +130,11 @@ class RedAPI {
         }
         
         accessToken = token
-        UserDefaults.standard.set(accessToken, forKey: Memory.kAccessToken)
+        UserDefaults.standard.set(accessToken, forKey: kAccessToken)
         return true
     }
     
-    func setRefreshToken(_ json: JSON) -> Bool {
+    private func setRefreshToken(_ json: JSON) -> Bool {
         guard let token = json["refresh_token"] as? String
             else {
                 print("ERROR: JSON doesn't contain refresh token")
@@ -138,17 +142,17 @@ class RedAPI {
         }
         
         refreshToken = token
-        UserDefaults.standard.set(refreshToken, forKey: Memory.kRefreshToken)
+        UserDefaults.standard.set(refreshToken, forKey: kRefreshToken)
         return true
     }
     
-    // MARK: Get Posts
+    // MARK: Get Listing/Posts
     
-    func getHotListing(callback: @escaping (JSON) -> ()) {
+    func getListing(_ listing: String, count: Int, callback: @escaping (JSON) -> ()) {
         if (accessToken == nil) {
             return 
         }
-        let url = URL(string: kRedditAPIEndPoint + "/hot?limit=3")!
+        let url = URL(string: kRedditAPIEndPoint + "\(listing)?limit=\(count)")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("bearer \(accessToken!)", forHTTPHeaderField: "Authorization")
@@ -189,6 +193,23 @@ class RedAPI {
         return posts
     }
     
+    func getPostsFromListing(_ listing: String, count: Int, callback: @escaping ([RPost]?) -> ()) {
+        getListing(listing, count: count) { (json) in
+            if let posts = self.getPosts(json) {
+                callback(posts)
+            } else {
+                callback(nil)
+            }
+        }
+    }
+    
     
     
 }
+
+enum Listings {
+    static let hot = "/hot"
+    static let new = "/new"
+    static let random = "/random"
+}
+
