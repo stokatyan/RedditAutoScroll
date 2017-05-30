@@ -10,14 +10,26 @@ import UIKit
 
 class HomePresenter {
     
-    var _view = HomeVC()
+    var _view: HomeVC!
+    let _model = Feed()
     
     func AttachView(view: HomeVC) {
         _view = view
     }
     
+    func DisplayPosts() {
+        _view.DisplayPosts(_model.getPosts())
+    }
+    
     func LoadPosts(listing: String, count: Int) {
-        
+        RedAPI.shared.getPostsFromListing(listing, count: count) { posts in
+            if posts != nil {
+                self._model.setPosts(posts!)
+                self._view.FinishedLoadingPosts(succeeded: true)
+            } else {
+                self._view.FinishedLoadingPosts(succeeded: false)
+            }
+        }
     }
     
     func getAccessToken() {
