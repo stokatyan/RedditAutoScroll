@@ -18,7 +18,7 @@ class Feed {
     func getPosts() -> [RPost] {
         return _posts
     }
-    
+        
     // MARK: set
     
     func setPosts(_ posts: [RPost]) {

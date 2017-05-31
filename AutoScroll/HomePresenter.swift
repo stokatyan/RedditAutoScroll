@@ -32,6 +32,13 @@ class HomePresenter {
         }
     }
     
+    func LoadPostMedia() {
+        let posts = _model.getPosts()
+        for post in posts {
+            post.setPreviewImage()
+        }
+    }
+    
     // MARK: get
     
     func getAccessToken() {
@@ -57,9 +64,12 @@ class HomePresenter {
     }
     
     func getPostHeight(_ index: Int) -> CGFloat {
-        if let post = getPost(index) {
-            return CGFloat(post.getHeight())
-        }
-        return CGFloat(RPost.DEFAULT_HEIGHT)
+        return CGFloat(getPost(index)!.getHeight())
+    }
+    func getPostImage(_ index: Int) -> UIImage? {
+        return getPost(index)!.getImage()
+    }
+    func getPostTitle(_ index: Int) -> String {
+        return getPost(index)!.getTitle()
     }
 }

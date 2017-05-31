@@ -12,6 +12,7 @@ protocol HomeView {
     func DisplayPosts(_ posts: [RPost])
     func FinishedLoadingPosts(succeeded: Bool)
     func LoadInitialPosts()
+    func LoadPostMedia()
     
     // MARK: Getting Acces Token
     func AccessTokenReceived()
@@ -53,6 +54,7 @@ extension HomeVC: HomeView {
     func FinishedLoadingPosts(succeeded: Bool) {
         if (succeeded) {
             print("finished loading posts")
+            LoadPostMedia()
             DispatchQueue.main.async {
                 self._tableview.reloadData()
             }
@@ -64,6 +66,9 @@ extension HomeVC: HomeView {
     func LoadInitialPosts() {
         print("loading initial posts")
         _homePresenter.LoadPosts(listing: Listings.hot, count: 5)
+    }
+    func LoadPostMedia() {
+        _homePresenter.LoadPostMedia()
     }
     
     // MARK: Getting Acces Token

@@ -8,7 +8,7 @@
 
 //  Data associated with a post on Reddit
 
-import Foundation
+import UIKit
 
 class RPost {
     
@@ -24,6 +24,8 @@ class RPost {
     private let _title: String?
     
     private var height: Double
+    private var previewImage: UIImage?
+    private var previewImageLink: String?
     
     
     init (_ json: JSON) {
@@ -46,6 +48,17 @@ class RPost {
         return height
     }
     
+    func getImage() -> UIImage? {
+        return previewImage
+    }
+    
+    func getTitle() -> String {
+        if (_title == nil) {
+            return ""
+        }
+        return _title!
+    }
+    
     // MARK: set
     
     func setHeight() {
@@ -53,8 +66,20 @@ class RPost {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
                 if let h = resolutions.last?["height"] as? Int {
                     height = Double(h)
+                    previewImageLink = resolutions.last!["url"] as? String
                 }
+                
             }
+        }
+    }
+    
+    func setPreviewImage() {
+        if (previewImageLink == nil) {
+            return
+        }
+        print(previewImageLink!)
+        if let filePath = Bundle.main.path(forResource: previewImageLink, ofType: "jpg"), let image = UIImage(contentsOfFile: filePath) {
+            previewImage = image
         }
     }
     

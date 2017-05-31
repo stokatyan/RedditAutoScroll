@@ -8,12 +8,18 @@
 
 import UIKit
 
+struct CellType {
+    static let regular = "Post_tvCell"
+}
+
 extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     
     func initializeTableView() {
         _tableview.dataSource = self
         _tableview.delegate = self
-        _tableview.register(UINib(nibName: "Post_tvCell", bundle: nil), forCellReuseIdentifier: "Post_tvCell")
+        _tableview.register(UINib(nibName: CellType.regular, bundle: nil), forCellReuseIdentifier: CellType.regular)
+        _tableview.rowHeight = UITableViewAutomaticDimension
+        _tableview.estimatedRowHeight = 140
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -22,15 +28,15 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Post_tvCell", for: indexPath) as! Post_tvCell
-        
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellType.regular, for: indexPath) as! Post_tvCell
+        cell.setTitle(_homePresenter.getPostTitle(index))
+        cell.setPreview(_homePresenter.getPostImage(index))
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let index = indexPath.row
-        return _homePresenter.getPostHeight(index)
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        let index = indexPath.row
+//        return _homePresenter.getPostHeight(index)
+//    }
     
 }
