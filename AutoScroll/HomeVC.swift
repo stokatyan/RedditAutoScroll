@@ -53,6 +53,9 @@ extension HomeVC: HomeView {
     func FinishedLoadingPosts(succeeded: Bool) {
         if (succeeded) {
             print("finished loading posts")
+            DispatchQueue.main.async {
+                self._tableview.reloadData()
+            }
             _homePresenter.DisplayPosts()
         } else {
             

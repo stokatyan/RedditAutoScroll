@@ -17,13 +17,20 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return _homePresenter.getPostCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let index = indexPath.row
         let cell = tableView.dequeueReusableCell(withIdentifier: "Post_tvCell", for: indexPath) as! Post_tvCell
         
+        
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let index = indexPath.row
+        return _homePresenter.getPostHeight(index)
     }
     
 }

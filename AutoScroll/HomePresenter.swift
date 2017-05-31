@@ -11,7 +11,7 @@ import UIKit
 class HomePresenter {
     
     var _view: HomeVC!
-    let _model = Feed()
+    private let _model = Feed()
     
     func AttachView(view: HomeVC) {
         _view = view
@@ -32,6 +32,8 @@ class HomePresenter {
         }
     }
     
+    // MARK: get
+    
     func getAccessToken() {
         RedAPI.shared.refreshAccessToken { (succesful) in
             if (!succesful) {
@@ -42,4 +44,22 @@ class HomePresenter {
         }
     }
     
+    private func getPost(_ index: Int) -> RPost? {
+        let posts = _model.getPosts()
+        if (index < posts.count ) {
+            return posts[index]
+        }
+        return nil
+    }
+    
+    func getPostCount() -> Int {
+        return _model.getPosts().count
+    }
+    
+    func getPostHeight(_ index: Int) -> CGFloat {
+        if let post = getPost(index) {
+            return CGFloat(post.getHeight())
+        }
+        return CGFloat(RPost.DEFAULT_HEIGHT)
+    }
 }

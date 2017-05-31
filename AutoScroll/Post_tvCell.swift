@@ -10,8 +10,5 @@ import UIKit
 
 class Post_tvCell: UITableViewCell {
     
-    func setH(_ h: CGFloat) {
-        
-    }
-    
+
 }
