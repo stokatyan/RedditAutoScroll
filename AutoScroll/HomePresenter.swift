@@ -35,7 +35,9 @@ class HomePresenter {
     func LoadPostMedia() {
         let posts = _model.getPosts()
         for post in posts {
-            post.setPreviewImage()
+            post.setPreviewImage() {
+                self._view._tableview.reloadData()
+            }
         }
     }
     
@@ -63,9 +65,6 @@ class HomePresenter {
         return _model.getPosts().count
     }
     
-    func getPostHeight(_ index: Int) -> CGFloat {
-        return CGFloat(getPost(index)!.getHeight())
-    }
     func getPostImage(_ index: Int) -> UIImage? {
         return getPost(index)!.getImage()
     }

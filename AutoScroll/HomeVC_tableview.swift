@@ -34,9 +34,9 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 //        let index = indexPath.row
-//        return _homePresenter.getPostHeight(index)
-//    }
+        return 300
+    }
     
 }

@@ -63,9 +63,9 @@
 		45496B181EDCEA26003B73D5 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				45D5FB501EDB9BF300856AFE /* HomePresenter.swift */,
 				455E8F6A1ECBDA02006E0B26 /* HomeVC.swift */,
 				4507F4271EDCDE920083DC7F /* HomeVC_tableview.swift */,
-				45D5FB501EDB9BF300856AFE /* HomePresenter.swift */,
 			);
 			name = Home;
 			sourceTree = "<group>";

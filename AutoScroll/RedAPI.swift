@@ -168,6 +168,7 @@ class RedAPI {
                     print("ERROR: JSON is nil")
                     return
                 }
+
                 callback(json)
             } catch let error as NSError {
                 print(error.debugDescription)

@@ -23,7 +23,6 @@ class RPost {
     private let _subreddit: String?
     private let _title: String?
     
-    private var height: Double
     private var previewImage: UIImage?
     private var previewImageLink: String?
     
@@ -38,15 +37,10 @@ class RPost {
         _subreddit = json["subreddit"] as? String
         _title = json["title"] as? String
         
-        height = RPost.DEFAULT_HEIGHT
-        setHeight()
+        setPreviewLink()
     }
     
     // MARK: get
-    
-    func getHeight() -> Double {
-        return height
-    }
     
     func getImage() -> UIImage? {
         return previewImage
@@ -61,25 +55,44 @@ class RPost {
     
     // MARK: set
     
-    func setHeight() {
+    func setPreviewLink() {
         if let images = _preview?["images"] as? [JSON] {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
-                if let h = resolutions.last?["height"] as? Int {
-                    height = Double(h)
-                    previewImageLink = resolutions.last!["url"] as? String
+                previewImageLink = resolutions.last!["url"] as? String
+                if (previewImageLink != nil) {
+                    previewImageLink = previewImageLink!.replacingOccurrences(of: "&amp;", with: "&")
                 }
-                
             }
         }
     }
     
-    func setPreviewImage() {
+    func setPreviewImage(callback: @escaping () -> ()) {
         if (previewImageLink == nil) {
             return
         }
-        print(previewImageLink!)
-        if let filePath = Bundle.main.path(forResource: previewImageLink, ofType: "jpg"), let image = UIImage(contentsOfFile: filePath) {
-            previewImage = image
+        downloadImage(url: URL(string: previewImageLink!)!) {
+            callback()
+        }
+    }
+    
+    private func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            completion(data, response, error)
+            }.resume()
+    }
+    
+    private func downloadImage(url: URL, callback: @escaping () -> ()) {
+        getDataFromUrl(url: url) { (data, response, error)  in
+            guard let data = data, error == nil
+            else {
+                print(error!.localizedDescription)
+                return
+            }
+            DispatchQueue.main.async() { () -> Void in
+                self.previewImage = UIImage(data: data)
+                callback()
+            }
         }
     }
     

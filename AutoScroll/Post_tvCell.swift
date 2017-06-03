@@ -15,11 +15,13 @@ class Post_tvCell: UITableViewCell {
     @IBOutlet weak var _title: UILabel!
     
     func setPreview(_ image: UIImage?) {
-        if (image == nil) {
-            _imageview.removeFromSuperview()
-        } else {
-            _imageview.image = image
-        }
+        guard let image = image else { return }
+        let size = CGSize(width: _imageview.frame.size.width,
+                          height: image.size.height)
+        
+        _imageview.frame = CGRect(origin: _imageview.frame.origin,
+                                  size: size)
+        _imageview.image = image
         
         
     }

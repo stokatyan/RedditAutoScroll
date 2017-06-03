@@ -26,30 +26,24 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8xr-y6-vhI">
-                        <rect key="frame" x="8" y="37" width="359" height="20.5"/>
+                        <rect key="frame" x="8" y="37" width="359" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fdi-w8-1Be">
+                    <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fdi-w8-1Be">
                         <rect key="frame" x="0.0" y="66" width="375" height="109"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="375" id="8VU-hf-woa"/>
-                            <constraint firstAttribute="height" constant="109" id="m39-ZC-yB2"/>
-                        </constraints>
                     </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="fdi-w8-1Be" firstAttribute="top" secondItem="8xr-y6-vhI" secondAttribute="bottom" constant="8.5" id="Njx-sG-cNg"/>
-                    <constraint firstItem="8xr-y6-vhI" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="P2f-Mo-RVc"/>
-                    <constraint firstItem="fdi-w8-1Be" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leading" id="QBa-c4-Isl"/>
-                    <constraint firstAttribute="trailing" secondItem="fdi-w8-1Be" secondAttribute="trailing" id="b9c-nt-VXv"/>
-                    <constraint firstItem="8xr-y6-vhI" firstAttribute="top" secondItem="W9z-1c-TN3" secondAttribute="bottom" constant="8" id="kia-81-RYq"/>
+                    <constraint firstItem="8xr-y6-vhI" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="CTq-4B-Iq6"/>
+                    <constraint firstItem="fdi-w8-1Be" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leading" id="Jjw-18-SUT"/>
+                    <constraint firstAttribute="trailing" secondItem="fdi-w8-1Be" secondAttribute="trailing" id="L1d-Ju-bB5"/>
+                    <constraint firstItem="fdi-w8-1Be" firstAttribute="top" secondItem="8xr-y6-vhI" secondAttribute="bottom" constant="8" id="WQG-Q6-QmG"/>
                     <constraint firstItem="W9z-1c-TN3" firstAttribute="top" secondItem="aFA-PM-ZzK" secondAttribute="topMargin" id="l6J-zC-sT4"/>
-                    <constraint firstItem="8xr-y6-vhI" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="p0m-Tf-WxL"/>
+                    <constraint firstItem="8xr-y6-vhI" firstAttribute="top" secondItem="W9z-1c-TN3" secondAttribute="bottom" constant="8" id="nEi-Mu-NAc"/>
+                    <constraint firstItem="8xr-y6-vhI" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="oJa-UG-oQB"/>
                     <constraint firstItem="W9z-1c-TN3" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="qR9-ND-03a"/>
-                    <constraint firstAttribute="bottom" secondItem="fdi-w8-1Be" secondAttribute="bottom" constant="-0.5" id="vDC-ff-L8p"/>
-                    <constraint firstItem="fdi-w8-1Be" firstAttribute="top" secondItem="8xr-y6-vhI" secondAttribute="bottom" constant="8.5" id="xwa-vx-9dU"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
