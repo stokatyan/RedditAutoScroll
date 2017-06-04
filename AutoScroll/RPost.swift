@@ -58,7 +58,7 @@ class RPost {
     func setPreviewLink() {
         if let images = _preview?["images"] as? [JSON] {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
-                previewImageLink = resolutions.last!["url"] as? String
+                previewImageLink = resolutions[resolutions.count/2]["url"] as? String
                 if (previewImageLink != nil) {
                     previewImageLink = previewImageLink!.replacingOccurrences(of: "&amp;", with: "&")
                 }

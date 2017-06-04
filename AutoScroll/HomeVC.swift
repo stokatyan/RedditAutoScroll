@@ -29,7 +29,6 @@ class HomeVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeTableView()
-        
         _homePresenter.AttachView(view: self)
         _homePresenter.getAccessToken()
     }
@@ -65,7 +64,7 @@ extension HomeVC: HomeView {
     }
     func LoadInitialPosts() {
         print("loading initial posts")
-        _homePresenter.LoadPosts(listing: Listings.hot, count: 5)
+        _homePresenter.LoadPosts(listing: Listings.hot, count: 15)
     }
     func LoadPostMedia() {
         _homePresenter.LoadPostMedia()
