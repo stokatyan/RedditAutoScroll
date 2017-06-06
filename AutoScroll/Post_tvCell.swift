@@ -32,7 +32,12 @@ class Post_tvCell: UITableViewCell {
 //    }
     
     func setPreview(_ image: UIImage?) {
-        guard let image = image else { return }
+        guard let image = image
+            else {
+                _imageview.image = nil
+                aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: _imageview, attribute: NSLayoutAttribute.height, multiplier: 0, constant: 0.0)
+                return
+        }
         let aspect = image.size.width / image.size.height
         
         aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: _imageview, attribute: NSLayoutAttribute.height, multiplier: aspect, constant: 0.0)
