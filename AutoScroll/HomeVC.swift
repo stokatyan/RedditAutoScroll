@@ -15,9 +15,6 @@ protocol HomeView {
      - parameter posts: the `RPost` array to print. */
     func printPosts(_ posts: [RPost])
 
-    
-    func finishedLoadingPosts(succeeded: Bool)
-
     /** Reloads the tableview that is displaying the reddit feed. */
     func reloadTableView()
 
@@ -29,41 +26,28 @@ class HomeVC: UIViewController {
     
     @IBOutlet weak var _tableview: UITableView!
 
+    // MARK: Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeTableView()
         homePresenter.attachView(view: self)
         refreshAccessToken()
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func accessTokenReceived() {
-        print("access token received")
-        loadInitialPosts()
-    }
-    func failedToReceiveAccessToken() {
-        print("failed to receive access token")
-    }
+    // MARK: Authentication
     
-    private func loadInitialPosts() {
-        print("loading initial posts")
-        homePresenter.loadPosts(listing: Listings.hot, count: 15)
-    }
-    
+    /** Refreshes the users access token by either getting a new one or using the refresh token.  */
     private func refreshAccessToken() {
         RedAPI.shared.refreshAccessToken { (succesful) in
             if (!succesful) {
                 UIApplication.shared.open(URL(string:RedAPI.shared.kAuthURL)!, options: [:], completionHandler: nil)
             } else {
-                self.accessTokenReceived()
+                self.homePresenter.initialLoginSucceeded()
             }
         }
     }
@@ -80,21 +64,10 @@ extension HomeVC: HomeView {
         }
     }
     
-    func finishedLoadingPosts(succeeded: Bool) {
-        if (succeeded) {
-            print("finished loading posts")
-            homePresenter.loadPostMedia()
-            DispatchQueue.main.async {
-                self._tableview.reloadData()
-            }
-            homePresenter.printPosts()
-        } else {
-            
-        }
-    }
-    
     func reloadTableView() {
-        self._tableview.reloadData()
+        DispatchQueue.main.async {
+            self._tableview.reloadData()
+        }
     }
 
 }

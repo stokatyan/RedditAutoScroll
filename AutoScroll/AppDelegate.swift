@@ -47,9 +47,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print(code)
             RedAPI.shared.getAccessToken(code: code) {succesful in
                 if(succesful) {
-                    vc.accessTokenReceived()
+                    vc.homePresenter.initialLoginSucceeded()
                 } else {
-                    vc.failedToReceiveAccessToken()
+                    
                 }
             }
             return true

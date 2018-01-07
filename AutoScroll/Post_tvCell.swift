@@ -15,6 +15,7 @@ class Post_tvCell: UITableViewCell {
     
     var _image: UIImage?
     
+    /** Sets the constraints of the cell to make the image being displayed fit perfectly on screen. */
     internal var aspectConstraint : NSLayoutConstraint? {
         didSet {
             if oldValue != nil {
@@ -26,6 +27,7 @@ class Post_tvCell: UITableViewCell {
         }
     }
     
+    /** Sets the preview image and adjusts the cell height of a post. */
     func setPreview(_ image: UIImage?) {
         guard let image = image
             else {
@@ -43,6 +45,7 @@ class Post_tvCell: UITableViewCell {
         _imageview.backgroundColor = UIColor.red
     }
     
+    /** Sets the title of the post. */
     func setTitle(_ text: String) {
         _title.text = text
     }
