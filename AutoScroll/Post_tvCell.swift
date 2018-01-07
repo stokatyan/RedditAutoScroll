@@ -12,6 +12,7 @@ class Post_tvCell: UITableViewCell {
 
     @IBOutlet weak var _imageview: UIImageView!
     @IBOutlet weak var _title: UILabel!
+    @IBOutlet weak var _subreddit: UILabel!
     
     var _image: UIImage?
     
@@ -25,6 +26,15 @@ class Post_tvCell: UITableViewCell {
                 _imageview.addConstraint(aspectConstraint!)
             }
         }
+    }
+
+    /**
+     Displays the contents of a given reddit post.
+     - parameter post: the reddit post to display */
+    func displayContents(of post: RPost) {
+        setTitle(post.getTitle())
+        setPreview(post.getImage())
+        setSubreddit(post.getSubreddit())
     }
     
     /** Sets the preview image and adjusts the cell height of a post. */
@@ -45,9 +55,14 @@ class Post_tvCell: UITableViewCell {
         _imageview.backgroundColor = UIColor.red
     }
     
-    /** Sets the title of the post. */
+    /** Sets the text of the title label. */
     func setTitle(_ text: String) {
         _title.text = text
+    }
+    
+    /** Sets the text of the subreddit label. */
+    func setSubreddit(_ text: String) {
+        _subreddit.text = "r/" + text
     }
     
 }

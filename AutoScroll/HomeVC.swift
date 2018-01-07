@@ -31,6 +31,7 @@ class HomeVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeTableView()
+        self.title = "Reddit Auto Scroll"
         homePresenter.attachView(view: self)
         refreshAccessToken()
     }

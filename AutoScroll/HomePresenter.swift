@@ -61,7 +61,7 @@ class HomePresenter {
     /**
      Gets a particular post from the feed model.
      - parameter index: the particular post to get from the model's array of posts. */
-    private func getPost(_ index: Int) -> RPost? {
+    func getPost(_ index: Int) -> RPost? {
         let posts = self.model.getPosts()
         if (index < posts.count ) {
             return posts[index]
@@ -72,18 +72,5 @@ class HomePresenter {
     /** Gets the number of posts in the feed. */
     func getPostCount() -> Int {
         return self.model.getPosts().count
-    }
-    
-    /**
-     Gets the image from a particular post from the feed model.
-     - parameter index: the particular post to get from the model's array of posts. */
-    func getPostImage(_ index: Int) -> UIImage? {
-        return getPost(index)!.getImage()
-    }
-    
-    /** Gets the title of a particular post  from the feed model.
-     - parameter index: the particular post to get from the model's array of posts.  */
-    func getPostTitle(_ index: Int) -> String {
-        return getPost(index)!.getTitle()
     }
 }
