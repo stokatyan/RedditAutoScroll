@@ -9,28 +9,31 @@
 import UIKit
 
 protocol HomeView {
-    func DisplayPosts(_ posts: [RPost])
-    func FinishedLoadingPosts(succeeded: Bool)
-    func LoadInitialPosts()
-    func LoadPostMedia()
     
-    // MARK: Getting Acces Token
-    func AccessTokenReceived()
-    func FailedToReceivceAccess()
-    func GettingAccesToken()
+    /**
+     Prints the current models `RPost` array to the console.
+     - parameter posts: the `RPost` array to print. */
+    func printPosts(_ posts: [RPost])
+
+    
+    func finishedLoadingPosts(succeeded: Bool)
+
+    /** Reloads the tableview that is displaying the reddit feed. */
+    func reloadTableView()
+
 }
 
 class HomeVC: UIViewController {
     
-    let _homePresenter = HomePresenter()
+    let homePresenter = HomePresenter()
     
     @IBOutlet weak var _tableview: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeTableView()
-        _homePresenter.AttachView(view: self)
-        _homePresenter.getAccessToken()
+        homePresenter.attachView(view: self)
+        refreshAccessToken()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -41,45 +44,58 @@ class HomeVC: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    func accessTokenReceived() {
+        print("access token received")
+        loadInitialPosts()
+    }
+    func failedToReceiveAccessToken() {
+        print("failed to receive access token")
+    }
+    
+    private func loadInitialPosts() {
+        print("loading initial posts")
+        homePresenter.loadPosts(listing: Listings.hot, count: 15)
+    }
+    
+    private func refreshAccessToken() {
+        RedAPI.shared.refreshAccessToken { (succesful) in
+            if (!succesful) {
+                UIApplication.shared.open(URL(string:RedAPI.shared.kAuthURL)!, options: [:], completionHandler: nil)
+            } else {
+                self.accessTokenReceived()
+            }
+        }
+    }
 
 }
 
+// MARK: HomeView protocal
+
 extension HomeVC: HomeView {
-    func DisplayPosts(_ posts: [RPost]) {
+    
+    func printPosts(_ posts: [RPost]) {
         for post in posts {
             post.rPrint()
         }
     }
-    func FinishedLoadingPosts(succeeded: Bool) {
+    
+    func finishedLoadingPosts(succeeded: Bool) {
         if (succeeded) {
             print("finished loading posts")
-            LoadPostMedia()
+            homePresenter.loadPostMedia()
             DispatchQueue.main.async {
                 self._tableview.reloadData()
             }
-            _homePresenter.DisplayPosts()
+            homePresenter.printPosts()
         } else {
             
         }
     }
-    func LoadInitialPosts() {
-        print("loading initial posts")
-        _homePresenter.LoadPosts(listing: Listings.hot, count: 15)
-    }
-    func LoadPostMedia() {
-        _homePresenter.LoadPostMedia()
-    }
     
-    // MARK: Getting Acces Token
-    func AccessTokenReceived() {
-        print("access token received")
-        LoadInitialPosts()
+    func reloadTableView() {
+        self._tableview.reloadData()
     }
-    func FailedToReceivceAccess() {
-        print("failed to receive access token")
-    }
-    func GettingAccesToken() {
-        print("getting access token")
-    }
+
 }
 

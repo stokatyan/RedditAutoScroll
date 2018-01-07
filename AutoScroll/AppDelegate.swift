@@ -42,14 +42,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        let vc = (self.window!.rootViewController as! UINavigationController).visibleViewController as! HomeView
+        let vc = (self.window!.rootViewController as! UINavigationController).visibleViewController as! HomeVC
         if let code = RedAPI.shared.getCodeFrom(url: url) {
             print(code)
             RedAPI.shared.getAccessToken(code: code) {succesful in
                 if(succesful) {
-                    vc.AccessTokenReceived()
+                    vc.accessTokenReceived()
                 } else {
-                    vc.FailedToReceivceAccess()
+                    vc.failedToReceiveAccessToken()
                 }
             }
             return true

@@ -10,51 +10,42 @@ import UIKit
 
 class HomePresenter {
     
-    var _view: HomeVC!
-    private let _model = Feed()
+    var view: HomeView!
+    private let model = Feed()
     
-    func AttachView(view: HomeVC) {
-        _view = view
+    func attachView(view: HomeVC) {
+        self.view = view
     }
     
-    func DisplayPosts() {
-        _view.DisplayPosts(_model.getPosts())
+    /** Prints the current models RPost array to the console.*/
+    func printPosts() {
+        self.view.printPosts(model.getPosts())
     }
     
-    func LoadPosts(listing: String, count: Int) {
+    func loadPosts(listing: String, count: Int) {
         RedAPI.shared.getPostsFromListing(listing, count: count) { posts in
             if posts != nil {
-                self._model.setPosts(posts!)
-                self._view.FinishedLoadingPosts(succeeded: true)
+                self.model.setPosts(posts!)
+                self.view.finishedLoadingPosts(succeeded: true)
             } else {
-                self._view.FinishedLoadingPosts(succeeded: false)
+                self.view.finishedLoadingPosts(succeeded: false)
             }
         }
     }
     
-    func LoadPostMedia() {
-        let posts = _model.getPosts()
+    func loadPostMedia() {
+        let posts = self.model.getPosts()
         for post in posts {
             post.setPreviewImage() {
-                self._view._tableview.reloadData()
+                self.view.reloadTableView()
             }
         }
     }
     
     // MARK: get
     
-    func getAccessToken() {
-        RedAPI.shared.refreshAccessToken { (succesful) in
-            if (!succesful) {
-                UIApplication.shared.open(URL(string:RedAPI.shared.kAuthURL)!, options: [:], completionHandler: nil)
-            } else {
-                self._view.AccessTokenReceived()
-            }
-        }
-    }
-    
     private func getPost(_ index: Int) -> RPost? {
-        let posts = _model.getPosts()
+        let posts = self.model.getPosts()
         if (index < posts.count ) {
             return posts[index]
         }
@@ -62,7 +53,7 @@ class HomePresenter {
     }
     
     func getPostCount() -> Int {
-        return _model.getPosts().count
+        return self.model.getPosts().count
     }
     
     func getPostImage(_ index: Int) -> UIImage? {
