@@ -80,6 +80,14 @@ class RPost {
         return _title!
     }
     
+    /** - returns: the subreddit of this post. */
+    func getSubreddit() -> String {
+        if (_subreddit == nil) {
+            return ""
+        }
+        return _subreddit!
+    }
+    
     // MARK: set
     
     /** Downloads and sets the preview image from `previewImageLink`. */

@@ -49,6 +49,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="_imageview" destination="fdi-w8-1Be" id="igI-em-mDh"/>
+                <outlet property="_subreddit" destination="W9z-1c-TN3" id="Hba-zo-AAA"/>
                 <outlet property="_title" destination="8xr-y6-vhI" id="uc3-mu-ti2"/>
             </connections>
             <point key="canvasLocation" x="-300.5" y="-896.5"/>

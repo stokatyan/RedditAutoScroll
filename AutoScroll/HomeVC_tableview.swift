@@ -29,8 +29,13 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
         let cell = tableView.dequeueReusableCell(withIdentifier: CellType.regular, for: indexPath) as! Post_tvCell
-        cell.setTitle(homePresenter.getPostTitle(index))
-        cell.setPreview(homePresenter.getPostImage(index))
+        
+        if let redditPost = homePresenter.getPost(index) {
+            cell.displayContents(of: redditPost)
+        }
+        
+//        cell.setTitle(homePresenter.getPostTitle(index))
+//        cell.setPreview(homePresenter.getPostImage(index))
         return cell
     }
     
