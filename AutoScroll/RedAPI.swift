@@ -20,17 +20,17 @@ class RedAPI {
     
     private var accessToken: String?
     private var refreshToken: String?
-    private let kAccessToken = "AccessToken"
-    private let kRefreshToken = "RefreshToken"
     
-    
-    // MARK: Get Access from Reddit
-    
-    func checkCurrentAccessToken() {
-        getTokens()
-        
+    struct PersistentMemory {
+        static let kAccessToken = "kAccessToken"
+        static let kRefreshToken = "kRefreshToken"
     }
+    
+    // MARK: Request Access to Reddit
 
+    /**
+     Gets the code from the given url.
+     - returns: the code string needed to request an access token. */
     func getCodeFrom(url: URL) -> String? {
         guard let queryParams = url.query?.components(separatedBy: "&")
             else {
@@ -47,6 +47,10 @@ class RedAPI {
         return codeString
     }
     
+    /**
+     Gets a new access token for the user.
+     - parameter code: the `code=` from the login url.
+     - parameter callback: what to execute after succeeding or failing to get an access token. */
     func getAccessToken(code: String, callback: @escaping (Bool) -> ()) {
         let loginString = String(format: "%@:%@", kClientID, "")
         let loginData = loginString.data(using: String.Encoding.utf8)!
@@ -79,6 +83,10 @@ class RedAPI {
         }).resume()
     }
     
+    /**
+     Refreshes an existing access token for the user.
+     - parameter code: the `code=` from the login url.
+     - parameter callback: what to execute after succeeding or failing to get an access token. */
     func refreshAccessToken(callback: @escaping (Bool) -> ()) {
         getTokens()
         if (refreshToken == nil) {
@@ -117,11 +125,16 @@ class RedAPI {
     
     // MARK: Access tokens <-> persistent memory
     
+    /** Updates `accessToken` and `refreshToken` to their most recent values. */
     func getTokens() {
-        accessToken = UserDefaults.standard.string(forKey: kAccessToken)
-        refreshToken = UserDefaults.standard.string(forKey: kRefreshToken)
+        accessToken = UserDefaults.standard.string(forKey: PersistentMemory.kAccessToken)
+        refreshToken = UserDefaults.standard.string(forKey: PersistentMemory.kRefreshToken)
     }
     
+    /**
+     Sets the access token that is stored in persistent memory.
+     - parameter json: the json containing the access token.
+     - returns: true iff the json contained the access token. */
     private func setAccessToken(_ json: JSON) -> Bool {
         guard let token = json["access_token"] as? String
             else {
@@ -130,10 +143,14 @@ class RedAPI {
         }
         
         accessToken = token
-        UserDefaults.standard.set(accessToken, forKey: kAccessToken)
+        UserDefaults.standard.set(accessToken, forKey: PersistentMemory.kAccessToken)
         return true
     }
     
+    /**
+     Sets the refresh access token that is stored in persistent memory.
+     - parameter json: the json containing the refresh token.
+     - returns: true iff the json contained the refresh token. */
     private func setRefreshToken(_ json: JSON) -> Bool {
         guard let token = json["refresh_token"] as? String
             else {
@@ -142,13 +159,18 @@ class RedAPI {
         }
         
         refreshToken = token
-        UserDefaults.standard.set(refreshToken, forKey: kRefreshToken)
+        UserDefaults.standard.set(refreshToken, forKey: PersistentMemory.kRefreshToken)
         return true
     }
     
     // MARK: Get Listing/Posts
     
-    func getListing(_ listing: String, count: Int, callback: @escaping (JSON) -> ()) {
+    /**
+     Gets a json version of a listing.
+     - parameter listing: the listing (hot, trendining, etc ..) to get a json version of.
+     - parameter count: the maximum number of posts to get from the given listing.
+     - parameter callback: what to do after getting a json version of the listing. */
+    private func getListing(_ listing: String, count: Int, callback: @escaping (JSON) -> ()) {
         if (accessToken == nil) {
             return 
         }
@@ -176,7 +198,11 @@ class RedAPI {
         }).resume()
     }
     
-    func getPosts(_ listing: JSON) -> [RPost]? {
+    /**
+     Converts a listing from json format to an array of `RPost`.
+     - parameter listing: the listing to get the `RPost` array from.
+     - returns: an array of `RPost'. */
+    private func getPosts(_ listing: JSON) -> [RPost]? {
         guard let data = listing["data"] as? JSON else {
             return nil;
         }
@@ -193,6 +219,11 @@ class RedAPI {
         return posts
     }
     
+    /**
+     Gets an array of `RPost` from the given Reddit listing.
+     - parameter listing: the desired Reddit listing.
+     - parameter count: the maximum limit of posts to get from the listing.
+     - parameter callback: what to exectute after getting the `RPost` array. */
     func getPostsFromListing(_ listing: String, count: Int, callback: @escaping ([RPost]?) -> ()) {
         getListing(listing, count: count) { (json) in
             if let posts = self.getPosts(json) {
@@ -202,8 +233,6 @@ class RedAPI {
             }
         }
     }
-    
-    
     
 }
 

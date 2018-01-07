@@ -26,11 +26,6 @@ class Post_tvCell: UITableViewCell {
         }
     }
     
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        aspectConstraint = nil
-//    }
-    
     func setPreview(_ image: UIImage?) {
         guard let image = image
             else {
