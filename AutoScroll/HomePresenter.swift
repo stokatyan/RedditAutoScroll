@@ -10,64 +10,79 @@ import UIKit
 
 class HomePresenter {
     
-    var _view: HomeVC!
-    private let _model = Feed()
+    var view: HomeView!
+    private let model = Feed()
     
-    func AttachView(view: HomeVC) {
-        _view = view
+    func attachView(view: HomeVC) {
+        self.view = view
     }
     
-    func DisplayPosts() {
-        _view.DisplayPosts(_model.getPosts())
+    /** Called when the user initially logs in and obtains a valid access token. */
+    func initialLoginSucceeded() {
+        print("access token received")
+        updateFeed(from: Listings.hot, count: 15)
     }
     
-    func LoadPosts(listing: String, count: Int) {
-        RedAPI.shared.getPostsFromListing(listing, count: count) { posts in
-            if posts != nil {
-                self._model.setPosts(posts!)
-                self._view.FinishedLoadingPosts(succeeded: true)
-            } else {
-                self._view.FinishedLoadingPosts(succeeded: false)
+    /** Loads the preview image for each post after the entire feed has been loaded. */
+    func loadPostMedia() {
+        let posts = self.model.getPosts()
+        for post in posts {
+            post.setPreviewImage() {
+                self.view.reloadTableView()
             }
         }
     }
     
-    func LoadPostMedia() {
-        let posts = _model.getPosts()
-        for post in posts {
-            post.setPreviewImage() {
-                self._view._tableview.reloadData()
+    /** Prints the current models RPost array to the console.*/
+    func printPosts() {
+        self.view.printPosts(model.getPosts())
+    }
+    
+    /**
+     Updates the feed model with posts from a reddit listing, and then updates the displayed feed.
+     - parameter listing: the listing (hot, trendining, etc ..) to get posts from.
+     - parameter count: the maximum number of posts to get. */
+    func updateFeed(from listing: String, count: Int) {
+        RedAPI.shared.getPostsFromListing(listing, count: count) { posts in
+            if posts != nil {
+                self.model.setPosts(posts!)
+                print("finished getting posts")
+                self.loadPostMedia()
+                self.view.reloadTableView()
+                self.printPosts()
+            } else {
+                
             }
         }
     }
     
     // MARK: get
     
-    func getAccessToken() {
-        RedAPI.shared.refreshAccessToken { (succesful) in
-            if (!succesful) {
-                UIApplication.shared.open(URL(string:RedAPI.shared.kAuthURL)!, options: [:], completionHandler: nil)
-            } else {
-                self._view.AccessTokenReceived()
-            }
-        }
-    }
-    
+    /**
+     Gets a particular post from the feed model.
+     - parameter index: the particular post to get from the model's array of posts. */
     private func getPost(_ index: Int) -> RPost? {
-        let posts = _model.getPosts()
+        let posts = self.model.getPosts()
         if (index < posts.count ) {
             return posts[index]
         }
         return nil
     }
     
+    /** Gets the number of posts in the feed. */
     func getPostCount() -> Int {
-        return _model.getPosts().count
+        return self.model.getPosts().count
     }
     
+    /**
+     Gets the image from a particular post from the feed model.
+     - parameter index: the particular post to get from the model's array of posts. */
     func getPostImage(_ index: Int) -> UIImage? {
         return getPost(index)!.getImage()
     }
+    
+    /** Gets the title of a particular post  from the feed model.
+     - parameter index: the particular post to get from the model's array of posts.  */
     func getPostTitle(_ index: Int) -> String {
         return getPost(index)!.getTitle()
     }

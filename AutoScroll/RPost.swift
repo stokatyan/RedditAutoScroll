@@ -26,7 +26,9 @@ class RPost {
     private var previewImage: UIImage?
     private var previewImageLink: String?
     
-    
+    /**
+     Initializes an RPost form a json.
+     - parameter json: th json describing the posts features. */
     init (_ json: JSON) {
         _id = json["id"] as? String
         _num_comments = json["num_comments"] as? Int
@@ -40,12 +42,37 @@ class RPost {
         setPreviewLink()
     }
     
+    /** Downloads the preview image for a post.  */
+    private func downloadImage(url: URL, callback: @escaping () -> ()) {
+        getDataFromUrl(url: url) { (data, response, error)  in
+            guard let data = data, error == nil
+                else {
+                    print(error!.localizedDescription)
+                    return
+            }
+            DispatchQueue.main.async() { () -> Void in
+                self.previewImage = UIImage(data: data)
+                callback()
+            }
+        }
+    }
+    
     // MARK: get
     
+    /** Gets the preview image data from a URL. */
+    private func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
+        URLSession.shared.dataTask(with: url) {
+            (data, response, error) in
+            completion(data, response, error)
+            }.resume()
+    }
+    
+    /** - returns: the preview image for this post. */
     func getImage() -> UIImage? {
         return previewImage
     }
     
+    /** - returns: the title of this post. */
     func getTitle() -> String {
         if (_title == nil) {
             return ""
@@ -55,6 +82,17 @@ class RPost {
     
     // MARK: set
     
+    /** Downloads and sets the preview image from `previewImageLink`. */
+    func setPreviewImage(callback: @escaping () -> ()) {
+        if (previewImageLink == nil) {
+            return
+        }
+        downloadImage(url: URL(string: previewImageLink!)!) {
+            callback()
+        }
+    }
+    
+    /** Finds and sets `previewImageLink` from `_preview`. */
     func setPreviewLink() {
         if let images = _preview?["images"] as? [JSON] {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
@@ -66,35 +104,7 @@ class RPost {
         }
     }
     
-    func setPreviewImage(callback: @escaping () -> ()) {
-        if (previewImageLink == nil) {
-            return
-        }
-        downloadImage(url: URL(string: previewImageLink!)!) {
-            callback()
-        }
-    }
-    
-    private func getDataFromUrl(url: URL, completion: @escaping (_ data: Data?, _  response: URLResponse?, _ error: Error?) -> Void) {
-        URLSession.shared.dataTask(with: url) {
-            (data, response, error) in
-            completion(data, response, error)
-            }.resume()
-    }
-    
-    private func downloadImage(url: URL, callback: @escaping () -> ()) {
-        getDataFromUrl(url: url) { (data, response, error)  in
-            guard let data = data, error == nil
-            else {
-                print(error!.localizedDescription)
-                return
-            }
-            DispatchQueue.main.async() { () -> Void in
-                self.previewImage = UIImage(data: data)
-                callback()
-            }
-        }
-    }
+    // MARK: Debug
     
     func rPrint() {
         print("----------")

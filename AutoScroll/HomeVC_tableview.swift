@@ -23,14 +23,14 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return _homePresenter.getPostCount()
+        return homePresenter.getPostCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let index = indexPath.row
         let cell = tableView.dequeueReusableCell(withIdentifier: CellType.regular, for: indexPath) as! Post_tvCell
-        cell.setTitle(_homePresenter.getPostTitle(index))
-        cell.setPreview(_homePresenter.getPostImage(index))
+        cell.setTitle(homePresenter.getPostTitle(index))
+        cell.setPreview(homePresenter.getPostImage(index))
         return cell
     }
     

@@ -12,7 +12,6 @@ class Feed {
     
     private var _posts = [RPost]()
     
-    
     // MARK: get
     
     func getPosts() -> [RPost] {
