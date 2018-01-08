@@ -37,14 +37,14 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="8xr-y6-vhI" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="CTq-4B-Iq6"/>
-                    <constraint firstAttribute="bottom" secondItem="fdi-w8-1Be" secondAttribute="bottom" constant="-0.5" id="F2E-d8-ay3"/>
+                    <constraint firstAttribute="bottom" secondItem="fdi-w8-1Be" secondAttribute="bottom" id="F2E-d8-ay3"/>
                     <constraint firstItem="fdi-w8-1Be" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leading" id="Jjw-18-SUT"/>
-                    <constraint firstAttribute="trailing" secondItem="fdi-w8-1Be" secondAttribute="trailing" id="L1d-Ju-bB5"/>
                     <constraint firstItem="fdi-w8-1Be" firstAttribute="top" secondItem="8xr-y6-vhI" secondAttribute="bottom" constant="8" id="WQG-Q6-QmG"/>
+                    <constraint firstItem="8xr-y6-vhI" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="hRI-8V-UMN"/>
                     <constraint firstItem="W9z-1c-TN3" firstAttribute="top" secondItem="aFA-PM-ZzK" secondAttribute="topMargin" id="l6J-zC-sT4"/>
                     <constraint firstItem="8xr-y6-vhI" firstAttribute="top" secondItem="W9z-1c-TN3" secondAttribute="bottom" constant="8" id="nEi-Mu-NAc"/>
-                    <constraint firstItem="8xr-y6-vhI" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="oJa-UG-oQB"/>
                     <constraint firstItem="W9z-1c-TN3" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="qR9-ND-03a"/>
+                    <constraint firstAttribute="trailing" secondItem="fdi-w8-1Be" secondAttribute="trailing" id="ryE-EX-c0p"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

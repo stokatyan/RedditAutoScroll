@@ -15,6 +15,7 @@ class RPost {
     static let DEFAULT_HEIGHT: Double = 44
     
     private let _id: String?
+    private let _is_video: Int?
     private var _num_comments: Int?
     private var _over_18: Bool?
     private let _permalink: String?
@@ -22,6 +23,7 @@ class RPost {
     private var _score: Int?
     private let _subreddit: String?
     private let _title: String?
+    private let _url: String?
     
     private var previewImage: UIImage?
     private var previewImageLink: String?
@@ -31,6 +33,7 @@ class RPost {
      - parameter json: th json describing the posts features. */
     init (_ json: JSON) {
         _id = json["id"] as? String
+        _is_video = json["is_video"] as? Int
         _num_comments = json["num_comments"] as? Int
         _over_18 = json["over_18"] as? Bool
         _permalink = json["permalink"] as? String
@@ -38,6 +41,11 @@ class RPost {
         _score = json["score"] as? Int
         _subreddit = json["subreddit"] as? String
         _title = json["title"] as? String
+        _url = json["url"] as? String
+        
+        if (_url != nil) {
+            print(_url!)
+        }
         
         setPreviewLink()
     }
@@ -102,6 +110,7 @@ class RPost {
     
     /** Finds and sets `previewImageLink` from `_preview`. */
     func setPreviewLink() {
+        
         if let images = _preview?["images"] as? [JSON] {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
                 previewImageLink = resolutions[resolutions.count/2]["url"] as? String

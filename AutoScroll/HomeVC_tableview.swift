@@ -34,8 +34,6 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
             cell.displayContents(of: redditPost)
         }
         
-//        cell.setTitle(homePresenter.getPostTitle(index))
-//        cell.setPreview(homePresenter.getPostImage(index))
         return cell
     }
     

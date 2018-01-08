@@ -20,9 +20,22 @@ class Post_tvCell: UITableViewCell {
     internal var aspectConstraint : NSLayoutConstraint? {
         didSet {
             if oldValue != nil {
+                print("OLD CONSTRAINT:")
+                print(oldValue)
                 _imageview.removeConstraint(oldValue!)
             }
+
             if aspectConstraint != nil {
+                print()
+                print("NEW CONSTRAINT:")
+                print(aspectConstraint!)
+                print()
+                for constraint in _imageview.constraints {
+                    print(constraint)
+                }
+
+
+                print()
                 _imageview.addConstraint(aspectConstraint!)
             }
         }
@@ -42,12 +55,15 @@ class Post_tvCell: UITableViewCell {
         guard let image = image
             else {
                 _imageview.image = nil
-                aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: _imageview, attribute: NSLayoutAttribute.height, multiplier: 0, constant: 0.0)
+                
+                aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.lessThanOrEqual, toItem: _imageview, attribute: NSLayoutAttribute.width, multiplier: 0, constant: 0.0)
+                
                 return
         }
-        let aspect = image.size.width / image.size.height
         
-        aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: _imageview, attribute: NSLayoutAttribute.height, multiplier: aspect, constant: 0.0)
+        let aspect = image.size.height / image.size.width
+
+        aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: _imageview, attribute: NSLayoutAttribute.width, multiplier: aspect, constant: 0.0)
         
         _imageview.image = image
         
