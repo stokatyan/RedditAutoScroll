@@ -20,22 +20,10 @@ class Post_tvCell: UITableViewCell {
     internal var aspectConstraint : NSLayoutConstraint? {
         didSet {
             if oldValue != nil {
-                print("OLD CONSTRAINT:")
-                print(oldValue)
                 _imageview.removeConstraint(oldValue!)
             }
 
             if aspectConstraint != nil {
-                print()
-                print("NEW CONSTRAINT:")
-                print(aspectConstraint!)
-                print()
-                for constraint in _imageview.constraints {
-                    print(constraint)
-                }
-
-
-                print()
                 _imageview.addConstraint(aspectConstraint!)
             }
         }
@@ -52,18 +40,26 @@ class Post_tvCell: UITableViewCell {
     
     /** Sets the preview image and adjusts the cell height of a post. */
     func setPreview(_ image: UIImage?) {
-        guard let image = image
-            else {
-                _imageview.image = nil
+        guard let image = image else {
+            _imageview.image = nil
                 
-                aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.lessThanOrEqual, toItem: _imageview, attribute: NSLayoutAttribute.width, multiplier: 0, constant: 0.0)
-                
-                return
+            aspectConstraint = NSLayoutConstraint(item: _imageview,
+                                                  attribute: NSLayoutAttribute.height,
+                                                  relatedBy: NSLayoutRelation.lessThanOrEqual,
+                                                  toItem: _imageview,
+                                                  attribute: NSLayoutAttribute.width,
+                                                  multiplier: 0, constant: 0.0)
+            return
         }
         
         let aspect = image.size.height / image.size.width
 
-        aspectConstraint = NSLayoutConstraint(item: _imageview, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: _imageview, attribute: NSLayoutAttribute.width, multiplier: aspect, constant: 0.0)
+        aspectConstraint = NSLayoutConstraint(item: _imageview,
+                                              attribute: NSLayoutAttribute.height,
+                                              relatedBy: NSLayoutRelation.equal,
+                                              toItem: _imageview,
+                                              attribute: NSLayoutAttribute.width,
+                                              multiplier: aspect, constant: 0.0)
         
         _imageview.image = image
         

@@ -37,7 +37,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="8xr-y6-vhI" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="CTq-4B-Iq6"/>
-                    <constraint firstAttribute="bottom" secondItem="fdi-w8-1Be" secondAttribute="bottom" id="F2E-d8-ay3"/>
+                    <constraint firstAttribute="bottom" secondItem="fdi-w8-1Be" secondAttribute="bottom" priority="999" id="F2E-d8-ay3"/>
                     <constraint firstItem="fdi-w8-1Be" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leading" id="Jjw-18-SUT"/>
                     <constraint firstItem="fdi-w8-1Be" firstAttribute="top" secondItem="8xr-y6-vhI" secondAttribute="bottom" constant="8" id="WQG-Q6-QmG"/>
                     <constraint firstItem="8xr-y6-vhI" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="hRI-8V-UMN"/>
