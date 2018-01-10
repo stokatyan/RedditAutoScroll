@@ -10,9 +10,23 @@
 
 import UIKit
 
+enum PreviewType {
+    case unknown
+    case jpg
+    case gif
+    case link
+    case subreddit
+    case youtube
+}
+
 class RPost {
     
     static let DEFAULT_HEIGHT: Double = 44
+    
+    let kGifSuffix = ".gifv"
+    let kJpgSuffix = ".jpg"
+    let kYoutubePrefix = "https://www.youtube.com/"
+    let kSubredditPrefix = "https://www.reddit.com/"
     
     private let _id: String?
     private let _is_video: Int?
@@ -27,10 +41,12 @@ class RPost {
     
     private var previewImage: UIImage?
     private var previewImageLink: String?
+    private var previewImageType = PreviewType.unknown
+    
     
     /**
      Initializes an RPost form a json.
-     - parameter json: th json describing the posts features. */
+     - parameter json: the json describing the posts features. */
     init (_ json: JSON) {
         _id = json["id"] as? String
         _is_video = json["is_video"] as? Int
@@ -48,21 +64,6 @@ class RPost {
         }
         
         setPreviewLink()
-    }
-    
-    /** Downloads the preview image for a post.  */
-    private func downloadImage(url: URL, callback: @escaping () -> ()) {
-        getDataFromUrl(url: url) { (data, response, error)  in
-            guard let data = data, error == nil
-                else {
-                    print(error!.localizedDescription)
-                    return
-            }
-            DispatchQueue.main.async() { () -> Void in
-                self.previewImage = UIImage(data: data)
-                callback()
-            }
-        }
     }
     
     // MARK: get
@@ -96,21 +97,102 @@ class RPost {
         return _subreddit!
     }
     
-    // MARK: set
+    // MARK: Preview Handling
+    
+    /** Sets `previewImageType` based on the post url. */
+    func determinePreviewType() {
+        guard let postUrl = _url else {
+            return
+        }
+        
+        if (postUrl.suffix(kJpgSuffix.count) == kJpgSuffix) {
+            previewImageType = .jpg
+        } else if (postUrl.suffix(kGifSuffix.count) == kGifSuffix) {
+            previewImageType = .gif
+        } else if (postUrl.prefix(kYoutubePrefix.count) == kYoutubePrefix) {
+            previewImageType = .youtube
+        } else if (postUrl.prefix(kSubredditPrefix.count) == kSubredditPrefix) {
+            previewImageType = .subreddit
+        }
+    }
+    
+    /**
+     Downloads the preview content from the given url and then executes a callback.
+     - parameter url: the url containing the preview content.
+     - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
+    private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
+        
+        switch self.previewImageType {
+        case .jpg:
+            downloadImage(url: url, callback: callback)
+            return
+        case .gif:
+            downloadGif(url: url, callback: callback)
+            return
+        default:
+            downloadImage(url: url, callback: callback)
+            return
+        }
+        
+    }
+    
+    /**
+     Downloads an image form the given url and then executes a callback.
+     - parameter url: the url containing the preview image.
+     - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
+    private func downloadImage(url: URL, callback: @escaping () -> ()) {
+        getDataFromUrl(url: url) { (data, response, error)  in
+            guard let data = data, error == nil
+                else {
+                    print(error!.localizedDescription)
+                    return
+            }
+            
+            DispatchQueue.main.async() { () -> Void in
+                self.previewImage = UIImage(data: data)
+                callback()
+            }
+        }
+    }
+    
+    /**
+     Downloads an image form the given url and then executes a callback.
+     - parameter url: the url containing the preview image.
+     - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
+    private func downloadGif(url: URL, callback: @escaping () -> ()) {
+
+
+    }
     
     /** Downloads and sets the preview image from `previewImageLink`. */
     func setPreviewImage(callback: @escaping () -> ()) {
         if (previewImageLink == nil) {
             return
         }
-        downloadImage(url: URL(string: previewImageLink!)!) {
+        downloadPreviewContent(url: URL(string: previewImageLink!)!) {
             callback()
         }
     }
     
-    /** Finds and sets `previewImageLink` from `_preview`. */
+    /** Finds and sets the appropriate `previewImageLink` depending on `previewImageType`. */
     func setPreviewLink() {
+        determinePreviewType()
         
+        switch previewImageType {
+        case .jpg:
+            break
+        case .gif:
+            break
+        default:
+            setPreviewLinkForDefaultImage()
+            break
+        }
+        
+        
+    }
+    
+    /** Sets the preview link based on the preview images. */
+    private func setPreviewLinkForDefaultImage() {
         if let images = _preview?["images"] as? [JSON] {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
                 previewImageLink = resolutions[resolutions.count/2]["url"] as? String
@@ -119,6 +201,11 @@ class RPost {
                 }
             }
         }
+    }
+    
+    /** Sets the preview link to the post url that contains the gif. */
+    private func setPreviewLinkForGif() {
+        previewImageLink = _url!
     }
     
     // MARK: Debug
