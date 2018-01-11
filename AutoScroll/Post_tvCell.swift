@@ -9,8 +9,8 @@
 import UIKit
 
 class Post_tvCell: UITableViewCell {
-
-    @IBOutlet weak var _imageview: UIImageView!
+    
+    @IBOutlet var _imageview: FLAnimatedImageView!
     @IBOutlet weak var _title: UILabel!
     @IBOutlet weak var _subreddit: UILabel!
     

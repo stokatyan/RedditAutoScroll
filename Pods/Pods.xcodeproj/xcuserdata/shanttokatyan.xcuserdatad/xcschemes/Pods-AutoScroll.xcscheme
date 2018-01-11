@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'F2D207EF4B5EC0AC1F52C545E36BD4B8'
+               BlueprintIdentifier = '42D0C9654A1845E4DDA15669DABAF468'
                BlueprintName = 'Pods-AutoScroll'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'Pods-AutoScroll.framework'>
+               BuildableName = 'libPods-AutoScroll.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

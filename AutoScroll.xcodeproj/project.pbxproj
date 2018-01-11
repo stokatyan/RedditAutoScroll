@@ -20,7 +20,7 @@
 		45D5FB511EDB9BF300856AFE /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5FB501EDB9BF300856AFE /* HomePresenter.swift */; };
 		45D5FB531EDBAB6300856AFE /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5FB521EDBAB6300856AFE /* Feed.swift */; };
 		45F9F6A31EDE993E002807BA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F9F6A21EDE993E002807BA /* Extensions.swift */; };
-		D02F1FE8B9DDE5C1981EEDCE /* Pods_AutoScroll.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1BB80A81E84BB1B0D73DCFB /* Pods_AutoScroll.framework */; };
+		76492383E0894DAA198452E9 /* libPods-AutoScroll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9BB914A4CF4251378C0D49 /* libPods-AutoScroll.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,9 +39,10 @@
 		45D5FB501EDB9BF300856AFE /* HomePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
 		45D5FB521EDBAB6300856AFE /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		45F9F6A21EDE993E002807BA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		62C855462007028400913C0B /* Bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bridging.h; sourceTree = "<group>"; };
 		925E76B10A5328947DCC5A8D /* Pods-AutoScroll.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoScroll.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AutoScroll/Pods-AutoScroll.debug.xcconfig"; sourceTree = "<group>"; };
 		9934E35849E3C4474F02E7B3 /* Pods-AutoScroll.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoScroll.release.xcconfig"; path = "Pods/Target Support Files/Pods-AutoScroll/Pods-AutoScroll.release.xcconfig"; sourceTree = "<group>"; };
-		B1BB80A81E84BB1B0D73DCFB /* Pods_AutoScroll.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AutoScroll.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB9BB914A4CF4251378C0D49 /* libPods-AutoScroll.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AutoScroll.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D02F1FE8B9DDE5C1981EEDCE /* Pods_AutoScroll.framework in Frameworks */,
+				76492383E0894DAA198452E9 /* libPods-AutoScroll.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +107,7 @@
 				455E8F6F1ECBDA02006E0B26 /* Assets.xcassets */,
 				455E8F711ECBDA02006E0B26 /* LaunchScreen.storyboard */,
 				455E8F741ECBDA02006E0B26 /* Info.plist */,
+				62C855462007028400913C0B /* Bridging.h */,
 			);
 			path = AutoScroll;
 			sourceTree = "<group>";
@@ -122,7 +124,7 @@
 		99D1C4CF51225BD09A601FE8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B1BB80A81E84BB1B0D73DCFB /* Pods_AutoScroll.framework */,
+				DB9BB914A4CF4251378C0D49 /* libPods-AutoScroll.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -419,6 +421,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = s.tokat.AutoScroll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = AutoScroll/Bridging.h;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
@@ -434,6 +437,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = s.tokat.AutoScroll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = AutoScroll/Bridging.h;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
