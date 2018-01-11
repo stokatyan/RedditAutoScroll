@@ -10,5 +10,6 @@
 #define Bridging_h
 
 #import "FLAnimatedImageView.h"
+#import "FLAnimatedImage.h"
 
 #endif /* Bridging_h */

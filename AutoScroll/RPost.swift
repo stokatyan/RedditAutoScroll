@@ -27,6 +27,7 @@ class RPost {
     let kJpgSuffix = ".jpg"
     let kYoutubePrefix = "https://www.youtube.com/"
     let kSubredditPrefix = "https://www.reddit.com/"
+    let kGfycatPrefix = "https://gfycat.com/"
     
     private let _id: String?
     private let _is_video: Int?
@@ -40,8 +41,9 @@ class RPost {
     private let _url: String?
     
     private var previewImage: UIImage?
-    private var previewImageLink: String?
-    private var previewImageType = PreviewType.unknown
+    private var previewGif: FLAnimatedImage?
+    private var previewLink: String?
+    private var m_previewType = PreviewType.unknown
     
     
     /**
@@ -77,8 +79,13 @@ class RPost {
     }
     
     /** - returns: the preview image for this post. */
-    func getImage() -> UIImage? {
+    func getPreviewImage() -> UIImage? {
         return previewImage
+    }
+    
+    /** - returns: the preview git for this post. */
+    func getPreviewGif() -> FLAnimatedImage? {
+        return previewGif
     }
     
     /** - returns: the title of this post. */
@@ -106,13 +113,15 @@ class RPost {
         }
         
         if (postUrl.suffix(kJpgSuffix.count) == kJpgSuffix) {
-            previewImageType = .jpg
+            m_previewType = .jpg
         } else if (postUrl.suffix(kGifSuffix.count) == kGifSuffix) {
-            previewImageType = .gif
+            m_previewType = .gif
         } else if (postUrl.prefix(kYoutubePrefix.count) == kYoutubePrefix) {
-            previewImageType = .youtube
+            m_previewType = .youtube
         } else if (postUrl.prefix(kSubredditPrefix.count) == kSubredditPrefix) {
-            previewImageType = .subreddit
+            m_previewType = .subreddit
+        } else if (postUrl.prefix(kGfycatPrefix.count) == kGfycatPrefix) {
+            m_previewType = .gif
         }
     }
     
@@ -122,25 +131,6 @@ class RPost {
      - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
     private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
         
-        switch self.previewImageType {
-        case .jpg:
-            downloadImage(url: url, callback: callback)
-            return
-        case .gif:
-            downloadGif(url: url, callback: callback)
-            return
-        default:
-            downloadImage(url: url, callback: callback)
-            return
-        }
-        
-    }
-    
-    /**
-     Downloads an image form the given url and then executes a callback.
-     - parameter url: the url containing the preview image.
-     - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
-    private func downloadImage(url: URL, callback: @escaping () -> ()) {
         getDataFromUrl(url: url) { (data, response, error)  in
             guard let data = data, error == nil
                 else {
@@ -149,27 +139,25 @@ class RPost {
             }
             
             DispatchQueue.main.async() { () -> Void in
-                self.previewImage = UIImage(data: data)
-                callback()
+                switch self.m_previewType {
+                case .jpg:
+                    self.previewImage = UIImage(data: data)
+                case .gif:
+                    self.previewGif = FLAnimatedImage(gifData: data)
+                default:
+                    callback()
+                }
             }
         }
+        
     }
     
-    /**
-     Downloads an image form the given url and then executes a callback.
-     - parameter url: the url containing the preview image.
-     - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
-    private func downloadGif(url: URL, callback: @escaping () -> ()) {
-
-
-    }
-    
-    /** Downloads and sets the preview image from `previewImageLink`. */
+    /** Downloads and sets the preview from `previewLink`. */
     func setPreviewImage(callback: @escaping () -> ()) {
-        if (previewImageLink == nil) {
+        if (previewLink == nil) {
             return
         }
-        downloadPreviewContent(url: URL(string: previewImageLink!)!) {
+        downloadPreviewContent(url: URL(string: previewLink!)!) {
             callback()
         }
     }
@@ -177,11 +165,13 @@ class RPost {
     /** Finds and sets the appropriate `previewImageLink` depending on `previewImageType`. */
     func setPreviewLink() {
         determinePreviewType()
-        
-        switch previewImageType {
+
+        switch m_previewType {
         case .jpg:
+            setPreviewLinkForDefaultImage()
             break
         case .gif:
+            setPreviewLinkForGif()
             break
         default:
             setPreviewLinkForDefaultImage()
@@ -195,9 +185,9 @@ class RPost {
     private func setPreviewLinkForDefaultImage() {
         if let images = _preview?["images"] as? [JSON] {
             if let resolutions = images.first?["resolutions"] as? [JSON] {
-                previewImageLink = resolutions[resolutions.count/2]["url"] as? String
-                if (previewImageLink != nil) {
-                    previewImageLink = previewImageLink!.replacingOccurrences(of: "&amp;", with: "&")
+                previewLink = resolutions[resolutions.count/2]["url"] as? String
+                if (previewLink != nil) {
+                    previewLink = previewLink!.replacingOccurrences(of: "&amp;", with: "&")
                 }
             }
         }
@@ -205,7 +195,10 @@ class RPost {
     
     /** Sets the preview link to the post url that contains the gif. */
     private func setPreviewLinkForGif() {
-        previewImageLink = _url!
+        if let gifUrl = _url {
+            previewLink = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif"//gifUrl //
+        }
+        
     }
     
     // MARK: Debug
@@ -219,7 +212,9 @@ class RPost {
         if (_score != nil) {print("_score: \(_score!)")}
         if (_subreddit != nil) {print("_subreddit: \(_subreddit!)")}
         if (_title != nil) {print("_title: \(_title!)")}
+        if (_url != nil) {print("_url: \(_url!)")}
 
+        print(m_previewType.hashValue)
         print("----------")
     }
     
