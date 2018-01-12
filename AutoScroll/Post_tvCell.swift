@@ -7,12 +7,16 @@
 //
 
 import UIKit
+import AVFoundation
+import AVKit
 
 class Post_tvCell: UITableViewCell {
     
     @IBOutlet var _imageview: FLAnimatedImageView!
     @IBOutlet weak var _title: UILabel!
     @IBOutlet weak var _subreddit: UILabel!
+    
+    var videoPlayer = AVPlayer()
     
     /** Sets the constraints of the cell to make the image being displayed fit perfectly on screen. */
     internal var aspectConstraint : NSLayoutConstraint? {
@@ -27,18 +31,21 @@ class Post_tvCell: UITableViewCell {
         }
     }
 
+    // MARK: Preview Content Setup
+    
     /**
      Displays the contents of a given reddit post.
      - parameter post: the reddit post to display */
     func displayContents(of post: RPost) {
         setTitle(post.getTitle())
         setSubreddit(post.getSubreddit())
-        let sub = post.getSubreddit()
         
         if let previewImage = post.getPreviewImage() {
             setPreview(image: previewImage)
         } else if let previewGif = post.getPreviewGif() {
             setPreview(gif: previewGif)
+        } else if let previewVideo = post.getPreviewVideo() {
+            setPreview(video: previewVideo)
         } else {
             setPreview(image: nil)
         }
@@ -50,24 +57,12 @@ class Post_tvCell: UITableViewCell {
     func setPreview(image: UIImage?) {
         guard let image = image else {
             _imageview.image = nil
-                
-            aspectConstraint = NSLayoutConstraint(item: _imageview,
-                                                  attribute: NSLayoutAttribute.height,
-                                                  relatedBy: NSLayoutRelation.lessThanOrEqual,
-                                                  toItem: _imageview,
-                                                  attribute: NSLayoutAttribute.width,
-                                                  multiplier: 0, constant: 0.0)
+            setAspectRatio(0)
             return
         }
         
         let aspect = image.size.height / image.size.width
-
-        aspectConstraint = NSLayoutConstraint(item: _imageview,
-                                              attribute: NSLayoutAttribute.height,
-                                              relatedBy: NSLayoutRelation.equal,
-                                              toItem: _imageview,
-                                              attribute: NSLayoutAttribute.width,
-                                              multiplier: aspect, constant: 0.0)
+        setAspectRatio(aspect)
         
         _imageview.image = image
         _imageview.backgroundColor = UIColor.red
@@ -76,17 +71,39 @@ class Post_tvCell: UITableViewCell {
     /** Sets the preview as a gif and adjusts the cell height of a post. */
     func setPreview(gif: FLAnimatedImage) {
         let aspect = gif.size.height / gif.size.width
+        setAspectRatio(aspect)
         
+        _imageview.animatedImage = gif
+        _imageview.backgroundColor = UIColor.red
+    }
+    
+    func setPreview(video: AVPlayer) {
+        setAspectRatio(1.2)
+        
+        let layer: AVPlayerLayer = AVPlayerLayer(player: video)
+        
+        layer.frame = _imageview.bounds
+//        layer.videoGravity = AVLayerVideoGravity.resizeAspectFit
+        
+        // add the layer to the container view
+        _imageview.layer.addSublayer(layer)
+        
+        video.play()
+    }
+    
+    /**
+     Sets the aspect ration of the preview content.
+     - parameter aspectRatio: `height/width` */
+    func setAspectRatio(_ aspectRatio: CGFloat) {
         aspectConstraint = NSLayoutConstraint(item: _imageview,
                                               attribute: NSLayoutAttribute.height,
                                               relatedBy: NSLayoutRelation.equal,
                                               toItem: _imageview,
                                               attribute: NSLayoutAttribute.width,
-                                              multiplier: aspect, constant: 0.0)
-        
-        _imageview.animatedImage = gif
-        _imageview.backgroundColor = UIColor.red
+                                              multiplier: aspectRatio, constant: 0.0)
     }
+    
+    // MARK: Text setup
     
     /** Sets the text of the title label. */
     func setTitle(_ text: String) {

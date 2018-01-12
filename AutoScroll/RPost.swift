@@ -9,6 +9,8 @@
 //  Data associated with a post on Reddit
 
 import UIKit
+import AVFoundation
+
 
 enum PreviewType {
     case unknown
@@ -16,6 +18,7 @@ enum PreviewType {
     case gif
     case link
     case subreddit
+    case video
     case youtube
 }
 
@@ -23,8 +26,9 @@ class RPost {
     
     static let DEFAULT_HEIGHT: Double = 44
     
-    let kGifSuffix = ".gifv"
+    let kGifSuffix = ".gif"
     let kJpgSuffix = ".jpg"
+    let kGifvSuffix = ".gifv"
     let kYoutubePrefix = "https://www.youtube.com/"
     let kSubredditPrefix = "https://www.reddit.com/"
     let kGfycatPrefix = "https://gfycat.com/"
@@ -40,8 +44,10 @@ class RPost {
     private let _title: String?
     private let _url: String?
     
-    private var previewImage: UIImage?
     private var previewGif: FLAnimatedImage?
+    private var previewImage: UIImage?
+    private var previewVideo: AVPlayer?
+    
     private var previewLink: String?
     private var m_previewType = PreviewType.unknown
     
@@ -83,9 +89,14 @@ class RPost {
         return previewImage
     }
     
-    /** - returns: the preview git for this post. */
+    /** - returns: the preview gif for this post. */
     func getPreviewGif() -> FLAnimatedImage? {
         return previewGif
+    }
+    
+    /** - returns: the preview video for this post. */
+    func getPreviewVideo() -> AVPlayer? {
+        return previewVideo
     }
     
     /** - returns: the title of this post. */
@@ -116,6 +127,8 @@ class RPost {
             m_previewType = .jpg
         } else if (postUrl.suffix(kGifSuffix.count) == kGifSuffix) {
             m_previewType = .gif
+        } else if (postUrl.suffix(kGifvSuffix.count) == kGifvSuffix) {
+            m_previewType = .video
         } else if (postUrl.prefix(kYoutubePrefix.count) == kYoutubePrefix) {
             m_previewType = .youtube
         } else if (postUrl.prefix(kSubredditPrefix.count) == kSubredditPrefix) {
@@ -130,6 +143,12 @@ class RPost {
      - parameter url: the url containing the preview content.
      - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
     private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
+        
+        if (m_previewType == .video) {
+            downloadPreviewVideo()
+            callback()
+            return
+        }
         
         getDataFromUrl(url: url) { (data, response, error)  in
             guard let data = data, error == nil
@@ -149,11 +168,16 @@ class RPost {
                 }
             }
         }
-        
+    }
+    
+    /** Downloads the preview video and initialized the previewVideo AVPlayer */
+    func downloadPreviewVideo() {
+        let videoURL = NSURL(string: previewLink!)
+        previewVideo = AVPlayer(url: videoURL! as URL)
     }
     
     /** Downloads and sets the preview from `previewLink`. */
-    func setPreviewImage(callback: @escaping () -> ()) {
+    func setPreview(callback: @escaping () -> ()) {
         if (previewLink == nil) {
             return
         }
@@ -172,6 +196,9 @@ class RPost {
             break
         case .gif:
             setPreviewLinkForGif()
+            break
+        case .video:
+            setPreviewLinkForVideo()
             break
         default:
             setPreviewLinkForDefaultImage()
@@ -193,10 +220,15 @@ class RPost {
         }
     }
     
-    /** Sets the preview link to the post url that contains the gif. */
+    /** Sets the preview link for the gif to the url. */
     private func setPreviewLinkForGif() {
-        if let gifUrl = _url {
-            previewLink = "https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif"//gifUrl //
+        previewLink = _url
+    }
+    
+    /** Sets the preview link for the video to the url. */
+    private func setPreviewLinkForVideo() {
+        if let url = _url {
+            previewLink = url.replacingOccurrences(of: ".gifv", with: ".mp4")
         }
         
     }
