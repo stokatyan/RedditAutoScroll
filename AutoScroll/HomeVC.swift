@@ -9,11 +9,6 @@
 import UIKit
 
 protocol HomeView {
-    
-    /**
-     Prints the current models `RPost` array to the console.
-     - parameter posts: the `RPost` array to print. */
-    func printPosts(_ posts: [RPost])
 
     /** Reloads the tableview that is displaying the reddit feed. */
     func reloadTableView()
@@ -58,12 +53,6 @@ class HomeVC: UIViewController {
 // MARK: HomeView protocal
 
 extension HomeVC: HomeView {
-    
-    func printPosts(_ posts: [RPost]) {
-        for post in posts {
-            post.rPrint()
-        }
-    }
     
     func reloadTableView() {
         DispatchQueue.main.async {

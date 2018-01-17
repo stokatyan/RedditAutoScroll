@@ -33,11 +33,6 @@ class HomePresenter {
         }
     }
     
-    /** Prints the current models RPost array to the console.*/
-    func printPosts() {
-        self.view.printPosts(model.getPosts())
-    }
-    
     /**
      Updates the feed model with posts from a reddit listing, and then updates the displayed feed.
      - parameter listing: the listing (hot, trendining, etc ..) to get posts from.
@@ -49,7 +44,6 @@ class HomePresenter {
                 print("finished getting posts")
                 self.loadPostMedia()
                 self.view.reloadTableView()
-                self.printPosts()
             } else {
                 
             }

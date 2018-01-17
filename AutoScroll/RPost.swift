@@ -22,7 +22,7 @@ enum PreviewType {
     case youtube
 }
 
-class RPost {
+class RPost: NSObject {
     
     static let DEFAULT_HEIGHT: Double = 44
     
@@ -47,9 +47,17 @@ class RPost {
     private var previewGif: FLAnimatedImage?
     private var previewImage: UIImage?
     private var previewVideo: AVPlayer?
+    private var previewVideoItem: AVPlayerItem?
+    private var previewDownloadCallback: (() -> Void)?
     
     private var previewLink: String?
     private var m_previewType = PreviewType.unknown
+    
+    var postPreviewType : PreviewType {
+        get {
+            return m_previewType
+        }
+    }
     
     
     /**
@@ -66,12 +74,18 @@ class RPost {
         _subreddit = json["subreddit"] as? String
         _title = json["title"] as? String
         _url = json["url"] as? String
-        
-        if (_url != nil) {
-            print(_url!)
-        }
-        
+
+        super.init()
         setPreviewLink()
+    }
+    
+    // MARK: KVO
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+
+        if let callback = previewDownloadCallback {
+            callback()
+        }
     }
     
     // MARK: get
@@ -143,10 +157,11 @@ class RPost {
      - parameter url: the url containing the preview content.
      - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
     private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
-        
         if (m_previewType == .video) {
+            previewDownloadCallback = {
+                callback()
+            }
             downloadPreviewVideo()
-            callback()
             return
         }
         
@@ -174,6 +189,7 @@ class RPost {
     func downloadPreviewVideo() {
         let videoURL = NSURL(string: previewLink!)
         previewVideo = AVPlayer(url: videoURL! as URL)
+        previewVideo?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     /** Downloads and sets the preview from `previewLink`. */

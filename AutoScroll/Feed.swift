@@ -12,6 +12,19 @@ class Feed {
     
     private var _posts = [RPost]()
     
+    // MARK: Filters
+    
+    func filterPosts(previewType: PreviewType) {
+        var filteredPosts = [RPost]()
+        
+        for post in _posts {
+            if (post.postPreviewType == previewType) {
+                filteredPosts.append(post)
+            }
+        }
+        _posts = filteredPosts
+    }
+    
     // MARK: get
     
     func getPosts() -> [RPost] {

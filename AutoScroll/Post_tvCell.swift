@@ -37,6 +37,9 @@ class Post_tvCell: UITableViewCell {
      Displays the contents of a given reddit post.
      - parameter post: the reddit post to display */
     func displayContents(of post: RPost) {
+        post.rPrint()
+        
+        removePreviewContent()
         setTitle(post.getTitle())
         setSubreddit(post.getSubreddit())
         
@@ -46,8 +49,19 @@ class Post_tvCell: UITableViewCell {
             setPreview(gif: previewGif)
         } else if let previewVideo = post.getPreviewVideo() {
             setPreview(video: previewVideo)
-        } else {
-            setPreview(image: nil)
+        }
+    }
+    
+    /**
+     Sets the imageView image to nil and removes all layers that contains videos.
+     Since the cells are reaused, content that is added manualy must also be removed manualy. */
+    func removePreviewContent() {
+        setPreview(image: nil)
+        
+        if let layers = _imageview.layer.sublayers {
+            for layer in layers {
+                layer.removeFromSuperlayer()
+            }
         }
     }
     
@@ -68,7 +82,7 @@ class Post_tvCell: UITableViewCell {
         _imageview.backgroundColor = UIColor.red
     }
     
-    /** Sets the preview as a gif and adjusts the cell height of a post. */
+    /** Sets the preview as a gif and adjusts the cell height of the post. */
     func setPreview(gif: FLAnimatedImage) {
         let aspect = gif.size.height / gif.size.width
         setAspectRatio(aspect)
@@ -77,15 +91,13 @@ class Post_tvCell: UITableViewCell {
         _imageview.backgroundColor = UIColor.red
     }
     
+    /** Sets the preview as a video, and adjusts the cell height of the post. */
     func setPreview(video: AVPlayer) {
         setAspectRatio(1.2)
         
         let layer: AVPlayerLayer = AVPlayerLayer(player: video)
         
         layer.frame = _imageview.bounds
-//        layer.videoGravity = AVLayerVideoGravity.resizeAspectFit
-        
-        // add the layer to the container view
         _imageview.layer.addSublayer(layer)
         
         video.play()
