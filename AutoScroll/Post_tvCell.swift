@@ -16,7 +16,7 @@ class Post_tvCell: UITableViewCell {
     @IBOutlet weak var _title: UILabel!
     @IBOutlet weak var _subreddit: UILabel!
     
-    var videoPlayer = AVPlayer()
+    var videoPlayer: AVPlayer?
     
     /** Sets the constraints of the cell to make the image being displayed fit perfectly on screen. */
     internal var aspectConstraint : NSLayoutConstraint? {
@@ -30,8 +30,20 @@ class Post_tvCell: UITableViewCell {
             }
         }
     }
+    
+    // MARK: Life Cycle
 
-    // MARK: Preview Content Setup
+    /** Replay the video when it is finished. */
+    @objc func playerItemDidReachEnd(notification: NSNotification) {
+        if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
+            playerItem.seek(to: kCMTimeZero, completionHandler: nil)
+            if let player = videoPlayer {
+                player.play()
+            }
+        }
+    }
+    
+    // MARK: Preview Media Setup
     
     /**
      Displays the contents of a given reddit post.
@@ -48,7 +60,7 @@ class Post_tvCell: UITableViewCell {
         } else if let previewGif = post.getPreviewGif() {
             setPreview(gif: previewGif)
         } else if let previewVideo = post.getPreviewVideo() {
-            setPreview(video: previewVideo)
+            setPreview(videoPlayer: previewVideo)
         }
     }
     
@@ -57,6 +69,7 @@ class Post_tvCell: UITableViewCell {
      Since the cells are reaused, content that is added manualy must also be removed manualy. */
     func removePreviewContent() {
         setPreview(image: nil)
+        NotificationCenter.default.removeObserver(self)
         
         if let layers = _imageview.layer.sublayers {
             for layer in layers {
@@ -92,15 +105,22 @@ class Post_tvCell: UITableViewCell {
     }
     
     /** Sets the preview as a video, and adjusts the cell height of the post. */
-    func setPreview(video: AVPlayer) {
+    func setPreview(videoPlayer: AVPlayer) {
+        self.videoPlayer = videoPlayer
+//        let aspect = self.videoPlayer!.
         setAspectRatio(1.2)
         
-        let layer: AVPlayerLayer = AVPlayerLayer(player: video)
+        let layer: AVPlayerLayer = AVPlayerLayer(player: videoPlayer)
         
         layer.frame = _imageview.bounds
         _imageview.layer.addSublayer(layer)
         
-        video.play()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
+                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                               object: videoPlayer.currentItem)
+        
+        videoPlayer.play()
     }
     
     /**
