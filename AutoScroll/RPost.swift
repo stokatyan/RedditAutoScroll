@@ -6,11 +6,8 @@
 //  Copyright © 2017 com.example. All rights reserved.
 //
 
-//  Data associated with a post on Reddit
-
 import UIKit
 import AVFoundation
-
 
 enum PreviewType {
     case unknown
@@ -24,14 +21,14 @@ enum PreviewType {
 
 class RPost: NSObject {
     
-    static let DEFAULT_HEIGHT: Double = 44
-    
     let kGifSuffix = ".gif"
     let kJpgSuffix = ".jpg"
     let kGifvSuffix = ".gifv"
     let kYoutubePrefix = "https://www.youtube.com/"
     let kSubredditPrefix = "https://www.reddit.com/"
     let kGfycatPrefix = "https://gfycat.com/"
+    
+    let kStatusKeyPath = "status"
     
     private let _id: String?
     private let _is_video: Int?
@@ -83,9 +80,19 @@ class RPost: NSObject {
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 
-        if let callback = previewDownloadCallback {
-            callback()
+        guard let keyPath = keyPath else {
+            return
         }
+        
+        switch keyPath {
+        case kStatusKeyPath:
+            if let callback = previewDownloadCallback {
+                callback()
+            }
+        default:
+            break
+        }
+        
     }
     
     // MARK: get
@@ -155,7 +162,7 @@ class RPost: NSObject {
     /**
      Downloads the preview content from the given url and then executes a callback.
      - parameter url: the url containing the preview content.
-     - parameter callback: the callback that is exectuted after the preview image is downloaded.*/
+     - parameter callback: the callback that is exectuted after the preview image is downloaded. */
     private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
         if (m_previewType == .video) {
             previewDownloadCallback = {
@@ -185,11 +192,11 @@ class RPost: NSObject {
         }
     }
     
-    /** Downloads the preview video and initialized the previewVideo AVPlayer */
+    /** Downloads the preview video and initializes the `previewVideo` AVPlayer */
     func downloadPreviewVideo() {
         let videoURL = NSURL(string: previewLink!)
         previewVideo = AVPlayer(url: videoURL! as URL)
-        previewVideo?.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions.new, context: nil)
+        previewVideo?.addObserver(self, forKeyPath: kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     /** Downloads and sets the preview from `previewLink`. */
@@ -220,7 +227,6 @@ class RPost: NSObject {
             setPreviewLinkForDefaultImage()
             break
         }
-        
         
     }
     
@@ -261,8 +267,6 @@ class RPost: NSObject {
         if (_subreddit != nil) {print("_subreddit: \(_subreddit!)")}
         if (_title != nil) {print("_title: \(_title!)")}
         if (_url != nil) {print("_url: \(_url!)")}
-
-        print(m_previewType.hashValue)
         print("----------")
     }
     

@@ -107,10 +107,14 @@ class Post_tvCell: UITableViewCell {
     /** Sets the preview as a video, and adjusts the cell height of the post. */
     func setPreview(videoPlayer: AVPlayer) {
         self.videoPlayer = videoPlayer
+        
 //        let aspect = self.videoPlayer!.
         setAspectRatio(1.2)
         
-        let layer: AVPlayerLayer = AVPlayerLayer(player: videoPlayer)
+        let layer: AVPlayerLayer = AVPlayerLayer(player: self.videoPlayer)
+        let h = layer.videoRect.size.height
+        let w = layer.videoRect.size.width
+        print("aspect = \(h) / \(w)")
         
         layer.frame = _imageview.bounds
         _imageview.layer.addSublayer(layer)
