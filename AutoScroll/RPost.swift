@@ -23,6 +23,7 @@ class RPost: NSObject {
     
     let kGifSuffix = ".gif"
     let kJpgSuffix = ".jpg"
+    let kPngSuffix = ".png"
     let kGifvSuffix = ".gifv"
     let kYoutubePrefix = "https://www.youtube.com/"
     let kSubredditPrefix = "https://www.reddit.com/"
@@ -47,15 +48,26 @@ class RPost: NSObject {
     private var previewVideoItem: AVPlayerItem?
     private var previewDownloadCallback: (() -> Void)?
     
+    private var _sourceWidth = 0
+    private var _sourceHeight = 0
+    var sourceWidth: Int {
+        get {
+            return _sourceWidth
+        }
+    }
+    var sourceHeight: Int {
+        get {
+            return _sourceHeight
+        }
+    }
+    
     private var previewLink: String?
     private var m_previewType = PreviewType.unknown
-    
-    var postPreviewType : PreviewType {
+    var postPreviewType: PreviewType {
         get {
             return m_previewType
         }
     }
-    
     
     /**
      Initializes an RPost form a json.
@@ -146,6 +158,8 @@ class RPost: NSObject {
         
         if (postUrl.suffix(kJpgSuffix.count) == kJpgSuffix) {
             m_previewType = .jpg
+        } else if (postUrl.suffix(kPngSuffix.count) == kPngSuffix) {
+            m_previewType = .jpg
         } else if (postUrl.suffix(kGifSuffix.count) == kGifSuffix) {
             m_previewType = .gif
         } else if (postUrl.suffix(kGifvSuffix.count) == kGifvSuffix) {
@@ -221,6 +235,7 @@ class RPost: NSObject {
             setPreviewLinkForGif()
             break
         case .video:
+            getDimensionsOfPreviewSource()
             setPreviewLinkForVideo()
             break
         default:
@@ -228,6 +243,21 @@ class RPost: NSObject {
             break
         }
         
+    }
+    
+    /** Gets the dimensions of the source image. */
+    private func getDimensionsOfPreviewSource() {
+        if let images = _preview?["images"] as? [JSON] {
+            if let source = images.first?["source"] as? JSON {
+                guard
+                    let width = source["width"] as? Int,
+                    let height = source["height"] as? Int else {
+                    return
+                }
+                _sourceWidth = width
+                _sourceHeight = height
+            }
+        }
     }
     
     /** Sets the preview link based on the preview images. */

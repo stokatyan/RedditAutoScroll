@@ -60,7 +60,7 @@ class Post_tvCell: UITableViewCell {
         } else if let previewGif = post.getPreviewGif() {
             setPreview(gif: previewGif)
         } else if let previewVideo = post.getPreviewVideo() {
-            setPreview(videoPlayer: previewVideo)
+            setPreview(videoPlayer: previewVideo, width: post.sourceWidth, height: post.sourceHeight)
         }
     }
     
@@ -105,16 +105,17 @@ class Post_tvCell: UITableViewCell {
     }
     
     /** Sets the preview as a video, and adjusts the cell height of the post. */
-    func setPreview(videoPlayer: AVPlayer) {
+    func setPreview(videoPlayer: AVPlayer, width: Int, height: Int) {
         self.videoPlayer = videoPlayer
         
-//        let aspect = self.videoPlayer!.
-        setAspectRatio(1.2)
+        var aspectRatio: CGFloat = 1.2
+        if (width != 0 && height != 0) {
+            aspectRatio = CGFloat(height) / CGFloat(width)
+        }
+        
+        setAspectRatio(aspectRatio)
         
         let layer: AVPlayerLayer = AVPlayerLayer(player: self.videoPlayer)
-        let h = layer.videoRect.size.height
-        let w = layer.videoRect.size.width
-        print("aspect = \(h) / \(w)")
         
         layer.frame = _imageview.bounds
         _imageview.layer.addSublayer(layer)
