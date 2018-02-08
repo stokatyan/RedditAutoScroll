@@ -43,7 +43,6 @@ class HomePresenter {
                 self.model.setPosts(posts!)
                 print("finished getting posts")
                 self.loadPostMedia()
-                self.view.reloadTableView()
             } else {
                 
             }

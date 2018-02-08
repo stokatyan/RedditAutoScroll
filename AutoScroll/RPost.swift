@@ -21,15 +21,15 @@ enum PreviewType {
 
 class RPost: NSObject {
     
-    let kGifSuffix = ".gif"
-    let kJpgSuffix = ".jpg"
-    let kPngSuffix = ".png"
-    let kGifvSuffix = ".gifv"
-    let kYoutubePrefix = "https://www.youtube.com/"
-    let kSubredditPrefix = "https://www.reddit.com/"
-    let kGfycatPrefix = "https://gfycat.com/"
+    private let kGifSuffix = ".gif"
+    private let kJpgSuffix = ".jpg"
+    private let kPngSuffix = ".png"
+    private let kGifvSuffix = ".gifv"
+    private let kYoutubePrefix = "https://www.youtube.com/"
+    private let kSubredditPrefix = "https://www.reddit.com/"
+    private let kGfycatPrefix = "https://gfycat.com/"
     
-    let kStatusKeyPath = "status"
+    private let kStatusKeyPath = "status"
     
     private let _id: String?
     private let _is_video: Int?

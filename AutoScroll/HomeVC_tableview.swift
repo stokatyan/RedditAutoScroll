@@ -20,6 +20,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         _tableview.register(UINib(nibName: CellType.regular, bundle: nil), forCellReuseIdentifier: CellType.regular)
         _tableview.estimatedRowHeight = 140
         _tableview.rowHeight = UITableViewAutomaticDimension
+        _tableview.allowsSelection = false
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -37,5 +38,14 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let postCell = cell as? Post_tvCell else {
+            return
+        }
+        
+        if let redditPost = homePresenter.getPost(indexPath.row) {
+            postCell.displayContents(of: redditPost)
+        }
+    }
     
 }

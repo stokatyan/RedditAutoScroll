@@ -50,7 +50,7 @@ class Post_tvCell: UITableViewCell {
      - parameter post: the reddit post to display */
     func displayContents(of post: RPost) {
         post.rPrint()
-        
+
         removePreviewContent()
         setTitle(post.getTitle())
         setSubreddit(post.getSubreddit())
@@ -62,6 +62,8 @@ class Post_tvCell: UITableViewCell {
         } else if let previewVideo = post.getPreviewVideo() {
             setPreview(videoPlayer: previewVideo, width: post.sourceWidth, height: post.sourceHeight)
         }
+        
+        _imageview.backgroundColor = UIColor.lightGray
     }
     
     /**
@@ -70,6 +72,7 @@ class Post_tvCell: UITableViewCell {
     func removePreviewContent() {
         setPreview(image: nil)
         NotificationCenter.default.removeObserver(self)
+        videoPlayer = nil
         
         if let layers = _imageview.layer.sublayers {
             for layer in layers {
@@ -92,7 +95,6 @@ class Post_tvCell: UITableViewCell {
         setAspectRatio(aspect)
         
         _imageview.image = image
-        _imageview.backgroundColor = UIColor.red
     }
     
     /** Sets the preview as a gif and adjusts the cell height of the post. */
@@ -101,14 +103,13 @@ class Post_tvCell: UITableViewCell {
         setAspectRatio(aspect)
         
         _imageview.animatedImage = gif
-        _imageview.backgroundColor = UIColor.red
     }
     
     /** Sets the preview as a video, and adjusts the cell height of the post. */
     func setPreview(videoPlayer: AVPlayer, width: Int, height: Int) {
         self.videoPlayer = videoPlayer
         
-        var aspectRatio: CGFloat = 1.2
+        var aspectRatio: CGFloat = 0
         if (width != 0 && height != 0) {
             aspectRatio = CGFloat(height) / CGFloat(width)
         }
