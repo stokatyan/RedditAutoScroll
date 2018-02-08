@@ -10,6 +10,7 @@ import UIKit
 
 struct CellType {
     static let regular = "Post_tvCell"
+    static let video = "Post_tvCell_Video"
 }
 
 extension HomeVC: UITableViewDelegate, UITableViewDataSource {
@@ -18,6 +19,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         _tableview.dataSource = self
         _tableview.delegate = self
         _tableview.register(UINib(nibName: CellType.regular, bundle: nil), forCellReuseIdentifier: CellType.regular)
+        _tableview.register(UINib(nibName: CellType.regular, bundle: nil), forCellReuseIdentifier: CellType.video)
         _tableview.estimatedRowHeight = 140
         _tableview.rowHeight = UITableViewAutomaticDimension
         _tableview.allowsSelection = false
@@ -28,24 +30,14 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let index = indexPath.row
-        let cell = tableView.dequeueReusableCell(withIdentifier: CellType.regular, for: indexPath) as! Post_tvCell
-        
-        if let redditPost = homePresenter.getPost(index) {
-            cell.displayContents(of: redditPost)
+        guard let redditPost = homePresenter.getPost(indexPath.row) else {
+            return UITableViewCell()
         }
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellType.regular, for: indexPath) as! Post_tvCell
+        cell.displayContents(of: redditPost)
         
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let postCell = cell as? Post_tvCell else {
-            return
-        }
-        
-        if let redditPost = homePresenter.getPost(indexPath.row) {
-            postCell.displayContents(of: redditPost)
-        }
     }
     
 }

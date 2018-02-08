@@ -107,6 +107,8 @@ class Post_tvCell: UITableViewCell {
     
     /** Sets the preview as a video, and adjusts the cell height of the post. */
     func setPreview(videoPlayer: AVPlayer, width: Int, height: Int) {
+        
+        
         self.videoPlayer = videoPlayer
         
         var aspectRatio: CGFloat = 0
@@ -117,20 +119,19 @@ class Post_tvCell: UITableViewCell {
         setAspectRatio(aspectRatio)
         
         let layer: AVPlayerLayer = AVPlayerLayer(player: self.videoPlayer)
-        
-        layer.frame = _imageview.bounds
-        _imageview.layer.addSublayer(layer)
+        layer.frame = self._imageview.bounds
+        self._imageview.layer.addSublayer(layer)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
                                                name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
                                                object: videoPlayer.currentItem)
-        
         videoPlayer.play()
+        
     }
     
     /**
-     Sets the aspect ration of the preview content.
+     Sets the aspect ratio of the cell's `_imageviw1.
      - parameter aspectRatio: `height/width` */
     func setAspectRatio(_ aspectRatio: CGFloat) {
         aspectConstraint = NSLayoutConstraint(item: _imageview,

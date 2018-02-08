@@ -20,7 +20,7 @@ class HomePresenter {
     /** Called when the user initially logs in and obtains a valid access token. */
     func initialLoginSucceeded() {
         print("access token received")
-        updateFeed(from: Listings.hot, count: 30)
+        updateFeed(from: Listings.hot, count: 50)
     }
     
     /** Loads the preview image for each post after the entire feed has been loaded. */
