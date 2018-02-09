@@ -77,6 +77,7 @@ class Post_tvCell: UITableViewCell {
     func removePreviewContent() {
         setPreview(image: nil)
         NotificationCenter.default.removeObserver(self)
+        loadingMediaActivityIndicator.stopAnimating()
         
         if (videoPlayer != nil) {
             if (m_observer != nil) {

@@ -195,8 +195,12 @@ class RPost: NSObject {
                 switch self.m_previewType {
                 case .jpg:
                     self.previewImage = UIImage(data: data)
+                    callback()
+                    break
                 case .gif:
                     self.previewGif = FLAnimatedImage(gifData: data)
+                    callback()
+                    break
                 default:
                     callback()
                 }
@@ -211,26 +215,15 @@ class RPost: NSObject {
         previewVideo?.currentItem?.addObserver(self, forKeyPath: Keys.kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
-    /** Downloads and sets the preview from `previewLink`. */
+    /**
+     Downloads and sets the preview from `previewLink`.
+     - parameter callback: a block that passes a boolean determining if the preview warrents reloading tableview. */
     func setPreview(callback: @escaping (Bool) -> ()) {
         if (previewLink == nil) {
             return
         }
         downloadPreviewContent(url: URL(string: previewLink!)!) {
-            switch self.m_previewType {
-            case .jpg:
-                callback(true)
-                break
-            case .gif:
-                callback(true)
-                break
-            case .video:
-                callback(true)
-                break
-            default:
-                callback(false)
-            }
-            
+            callback(true)
         }
     }
     
