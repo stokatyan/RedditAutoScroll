@@ -219,12 +219,25 @@ class RPost: NSObject {
     }
     
     /** Downloads and sets the preview from `previewLink`. */
-    func setPreview(callback: @escaping () -> ()) {
+    func setPreview(callback: @escaping (Bool) -> ()) {
         if (previewLink == nil) {
             return
         }
         downloadPreviewContent(url: URL(string: previewLink!)!) {
-            callback()
+            switch self.m_previewType {
+            case .jpg:
+                callback(true)
+                break
+            case .gif:
+                callback(true)
+                break
+            case .video:
+                callback(true)
+                break
+            default:
+                callback(false)
+            }
+            
         }
     }
     

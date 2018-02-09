@@ -27,8 +27,10 @@ class HomePresenter {
     func loadPostMedia() {
         let posts = self.model.getPosts()
         for post in posts {
-            post.setPreview() {
-                self.view.reloadTableView(atIndex: post.index)
+            post.setPreview() { shouldReloud in
+                if (shouldReloud) {
+                    self.view.reloadTableView(atIndex: post.index)
+                }
             }
         }
     }
