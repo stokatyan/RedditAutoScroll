@@ -205,8 +205,9 @@ class RPost: NSObject {
                 case .gif:
                     self.previewGif = FLAnimatedImage(gifData: data)
                 default:
-                    callback()
+                    break
                 }
+                callback()
             }
         }
     }
