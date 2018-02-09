@@ -35,7 +35,7 @@ class Feed {
     
     func setPosts(_ posts: [RPost]) {
         _posts = posts
-//        filterPosts(previewType: .video)
+        filterPosts(previewType: .video)
     }
     
 }
