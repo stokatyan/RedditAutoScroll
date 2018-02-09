@@ -28,7 +28,7 @@ class HomePresenter {
         let posts = self.model.getPosts()
         for post in posts {
             post.setPreview() {
-                self.view.reloadTableView()
+                self.view.reloadTableView(atIndex: post.index)
             }
         }
     }
@@ -42,6 +42,7 @@ class HomePresenter {
             if posts != nil {
                 self.model.setPosts(posts!)
                 print("finished getting posts")
+                self.view.reloadTableView()
                 self.loadPostMedia()
             } else {
                 

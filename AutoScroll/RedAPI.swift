@@ -213,7 +213,7 @@ class RedAPI {
         var posts = [RPost]()
         for child in children {
             if let post = child["data"] as? JSON {
-                posts.append(RPost(post))
+                posts.append(RPost(post, index: posts.count))
             }
         }
         return posts

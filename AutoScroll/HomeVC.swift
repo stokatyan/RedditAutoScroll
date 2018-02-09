@@ -12,6 +12,11 @@ protocol HomeView {
 
     /** Reloads the tableview that is displaying the reddit feed. */
     func reloadTableView()
+    
+    /**
+     Reloads the tableview at a particular cell that is displaying the reddit feed.
+     - parameter index: the index of the cell to reload. */
+    func reloadTableView(atIndex index: Int)
 
 }
 
@@ -57,6 +62,12 @@ extension HomeVC: HomeView {
     func reloadTableView() {
         DispatchQueue.main.async {
             self._tableview.reloadData()
+        }
+    }
+    
+    func reloadTableView(atIndex index: Int) {
+        DispatchQueue.main.async {
+            self._tableview.reloadRows(at: [IndexPath(row: index, section: 0)], with: .left)
         }
     }
 

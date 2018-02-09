@@ -21,6 +21,9 @@ enum PreviewType {
 
 class RPost: NSObject {
     
+    /** The index of the post's location in a feed. */
+    let index: Int
+    
     private let kGifSuffix = ".gif"
     private let kJpgSuffix = ".jpg"
     private let kPngSuffix = ".png"
@@ -71,8 +74,9 @@ class RPost: NSObject {
     
     /**
      Initializes an RPost form a json.
-     - parameter json: the json describing the posts features. */
-    init (_ json: JSON) {
+     - parameter json: the json describing the posts features.
+     - parameter index: the index of the post's location in a feed. */
+    init (_ json: JSON, index: Int = 0) {
         _id = json["id"] as? String
         _is_video = json["is_video"] as? Int
         _num_comments = json["num_comments"] as? Int
@@ -83,6 +87,7 @@ class RPost: NSObject {
         _subreddit = json["subreddit"] as? String
         _title = json["title"] as? String
         _url = json["url"] as? String
+        self.index = index
 
         super.init()
         setPreviewLink()
