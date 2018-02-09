@@ -20,4 +20,5 @@ struct Keys {
     
     static let kStatusKeyPath = "status"
     static let kRateKeyPath = "rate"
+    static let kCurrentTimeKeyPath = "currentTime"
 }

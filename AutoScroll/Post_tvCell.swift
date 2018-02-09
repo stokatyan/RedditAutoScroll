@@ -140,6 +140,7 @@ class Post_tvCell: UITableViewCell {
         
         self._imageview.layer.addSublayer(layer)
         videoPlayer.play()
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
                                                name: .AVPlayerItemDidPlayToEndTime,
@@ -152,6 +153,7 @@ class Post_tvCell: UITableViewCell {
         
         m_observer = Observer(self)
         self.videoPlayer!.addObserver(m_observer!, forKeyPath: Keys.kRateKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
+//        self.videoPlayer!.currentItem!.addObserver(m_observer!, forKeyPath: Keys.kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     /**

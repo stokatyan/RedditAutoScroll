@@ -39,7 +39,6 @@ class RPost: NSObject {
     private var previewImage: UIImage?
     private var previewVideo: AVPlayer?
     private var previewVideoItem: AVPlayerItem?
-    private var previewDownloadCallback: (() -> Void)?
     
     private var _sourceWidth = 0
     private var _sourceHeight = 0
@@ -81,28 +80,6 @@ class RPost: NSObject {
 
         super.init()
         setPreviewLink()
-    }
-    
-    // MARK: KVO
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-
-        guard let keyPath = keyPath, let item = object as? AVPlayerItem else {
-            return
-        }
-        
-        switch keyPath {
-        case Keys.kStatusKeyPath:
-            guard (item.status == AVPlayerItemStatus.readyToPlay) else {
-                return
-            }
-            if let callback = previewDownloadCallback {
-                callback()
-            }
-        default:
-            break
-        }
-        
     }
     
     // MARK: get
@@ -177,10 +154,8 @@ class RPost: NSObject {
      - parameter callback: the callback that is exectuted after the preview image is downloaded. */
     private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
         if (m_previewType == .video) {
-            previewDownloadCallback = {
-                callback()
-            }
             downloadPreviewVideo()
+            callback()
             return
         }
         
@@ -212,7 +187,6 @@ class RPost: NSObject {
     func downloadPreviewVideo() {
         let videoURL = NSURL(string: previewLink!)
         previewVideo = AVPlayer(url: videoURL! as URL)
-        previewVideo?.currentItem?.addObserver(self, forKeyPath: Keys.kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     /**
