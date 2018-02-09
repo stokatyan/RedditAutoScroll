@@ -34,11 +34,17 @@
                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fdi-w8-1Be" customClass="FLAnimatedImageView">
                         <rect key="frame" x="0.0" y="69" width="375" height="162"/>
                     </imageView>
+                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="WOv-FD-nnb">
+                        <rect key="frame" x="339" y="11" width="20" height="20"/>
+                        <color key="color" red="0.00037984644719999999" green="0.44147101509999997" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </activityIndicatorView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="8xr-y6-vhI" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leadingMargin" id="CTq-4B-Iq6"/>
                     <constraint firstAttribute="bottom" secondItem="fdi-w8-1Be" secondAttribute="bottom" priority="999" id="F2E-d8-ay3"/>
+                    <constraint firstItem="WOv-FD-nnb" firstAttribute="top" secondItem="aFA-PM-ZzK" secondAttribute="topMargin" id="Hui-K0-nsA"/>
                     <constraint firstItem="fdi-w8-1Be" firstAttribute="leading" secondItem="aFA-PM-ZzK" secondAttribute="leading" id="Jjw-18-SUT"/>
+                    <constraint firstItem="WOv-FD-nnb" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="WDu-lC-4D7"/>
                     <constraint firstItem="fdi-w8-1Be" firstAttribute="top" secondItem="8xr-y6-vhI" secondAttribute="bottom" constant="8" id="WQG-Q6-QmG"/>
                     <constraint firstItem="8xr-y6-vhI" firstAttribute="trailing" secondItem="aFA-PM-ZzK" secondAttribute="trailingMargin" id="hRI-8V-UMN"/>
                     <constraint firstItem="W9z-1c-TN3" firstAttribute="top" secondItem="aFA-PM-ZzK" secondAttribute="topMargin" id="l6J-zC-sT4"/>
@@ -51,6 +57,7 @@
                 <outlet property="_imageview" destination="fdi-w8-1Be" id="Cyf-Gw-R1j"/>
                 <outlet property="_subreddit" destination="W9z-1c-TN3" id="Hba-zo-AAA"/>
                 <outlet property="_title" destination="8xr-y6-vhI" id="uc3-mu-ti2"/>
+                <outlet property="loadingMediaActivityIndicator" destination="WOv-FD-nnb" id="s2z-P7-peR"/>
             </connections>
             <point key="canvasLocation" x="-300.5" y="-896.5"/>
         </tableViewCell>

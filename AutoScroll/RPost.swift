@@ -24,16 +24,6 @@ class RPost: NSObject {
     /** The index of the post's location in a feed. */
     let index: Int
     
-    private let kGifSuffix = ".gif"
-    private let kJpgSuffix = ".jpg"
-    private let kPngSuffix = ".png"
-    private let kGifvSuffix = ".gifv"
-    private let kYoutubePrefix = "https://www.youtube.com/"
-    private let kSubredditPrefix = "https://www.reddit.com/"
-    private let kGfycatPrefix = "https://gfycat.com/"
-    
-    private let kStatusKeyPath = "status"
-    
     private let _id: String?
     private let _is_video: Int?
     private var _num_comments: Int?
@@ -97,12 +87,15 @@ class RPost: NSObject {
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
 
-        guard let keyPath = keyPath else {
+        guard let keyPath = keyPath, let item = object as? AVPlayerItem else {
             return
         }
         
         switch keyPath {
-        case kStatusKeyPath:
+        case Keys.kStatusKeyPath:
+            guard (item.status == AVPlayerItemStatus.readyToPlay) else {
+                return
+            }
             if let callback = previewDownloadCallback {
                 callback()
             }
@@ -161,19 +154,19 @@ class RPost: NSObject {
             return
         }
         
-        if (postUrl.suffix(kJpgSuffix.count) == kJpgSuffix) {
+        if (postUrl.suffix(Keys.kJpgSuffix.count) == Keys.kJpgSuffix) {
             m_previewType = .jpg
-        } else if (postUrl.suffix(kPngSuffix.count) == kPngSuffix) {
+        } else if (postUrl.suffix(Keys.kPngSuffix.count) == Keys.kPngSuffix) {
             m_previewType = .jpg
-        } else if (postUrl.suffix(kGifSuffix.count) == kGifSuffix) {
+        } else if (postUrl.suffix(Keys.kGifSuffix.count) == Keys.kGifSuffix) {
             m_previewType = .gif
-        } else if (postUrl.suffix(kGifvSuffix.count) == kGifvSuffix) {
+        } else if (postUrl.suffix(Keys.kGifvSuffix.count) == Keys.kGifvSuffix) {
             m_previewType = .video
-        } else if (postUrl.prefix(kYoutubePrefix.count) == kYoutubePrefix) {
+        } else if (postUrl.prefix(Keys.kYoutubePrefix.count) == Keys.kYoutubePrefix) {
             m_previewType = .youtube
-        } else if (postUrl.prefix(kSubredditPrefix.count) == kSubredditPrefix) {
+        } else if (postUrl.prefix(Keys.kSubredditPrefix.count) == Keys.kSubredditPrefix) {
             m_previewType = .subreddit
-        } else if (postUrl.prefix(kGfycatPrefix.count) == kGfycatPrefix) {
+        } else if (postUrl.prefix(Keys.kGfycatPrefix.count) == Keys.kGfycatPrefix) {
             m_previewType = .gif
         }
     }
@@ -215,7 +208,7 @@ class RPost: NSObject {
     func downloadPreviewVideo() {
         let videoURL = NSURL(string: previewLink!)
         previewVideo = AVPlayer(url: videoURL! as URL)
-        previewVideo?.addObserver(self, forKeyPath: kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
+        previewVideo?.currentItem?.addObserver(self, forKeyPath: Keys.kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     /** Downloads and sets the preview from `previewLink`. */
