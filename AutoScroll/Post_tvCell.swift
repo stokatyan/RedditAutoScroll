@@ -15,10 +15,8 @@ class Post_tvCell: UITableViewCell {
     @IBOutlet var _imageview: FLAnimatedImageView!
     @IBOutlet weak var _title: UILabel!
     @IBOutlet weak var _subreddit: UILabel!
-    @IBOutlet var loadingMediaActivityIndicator: UIActivityIndicatorView!
     
     var videoPlayer: AVPlayer?
-    var m_observer: Observer?
     
     /** Sets the constraints of the cell to make the image being displayed fit perfectly on screen. */
     internal var aspectConstraint : NSLayoutConstraint? {
@@ -33,7 +31,7 @@ class Post_tvCell: UITableViewCell {
         }
     }
     
-    // MARK: Notifications
+    // MARK: Life Cycle
 
     /** Replay the video when it is finished, or when it failed to finish. */
     @objc func playerItemDidReachEnd(notification: NSNotification) {
@@ -44,8 +42,9 @@ class Post_tvCell: UITableViewCell {
             }
         }
         
-        let name = notification.name.rawValue
+        let name = notification.name
         print("\(name) : \(_title.text!)")
+
     }
     
     // MARK: Preview Media Setup
@@ -77,15 +76,7 @@ class Post_tvCell: UITableViewCell {
     func removePreviewContent() {
         setPreview(image: nil)
         NotificationCenter.default.removeObserver(self)
-        loadingMediaActivityIndicator.stopAnimating()
-        
-        if (videoPlayer != nil) {
-            if (m_observer != nil) {
-                videoPlayer!.removeObserver(m_observer!, forKeyPath: Keys.kRateKeyPath)
-                m_observer = nil
-            }
-            videoPlayer = nil
-        }
+        videoPlayer = nil
         
         if let layers = _imageview.layer.sublayers {
             for layer in layers {
@@ -120,10 +111,6 @@ class Post_tvCell: UITableViewCell {
     
     /** Sets the preview as a video, and adjusts the cell height of the post. */
     func setPreview(videoPlayer: AVPlayer, width: Int, height: Int) {
-        loadingMediaActivityIndicator.isHidden = false
-        loadingMediaActivityIndicator.startAnimating()
-        
-        
         self.videoPlayer = videoPlayer
         
         var aspectRatio: CGFloat = 0
@@ -137,10 +124,9 @@ class Post_tvCell: UITableViewCell {
         let cellWidth = self.frame.size.width
         layer.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellWidth * aspectRatio)
 //        layer.frame = self._imageview.bounds
-        
+
         self._imageview.layer.addSublayer(layer)
         videoPlayer.play()
-
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
                                                name: .AVPlayerItemDidPlayToEndTime,
@@ -150,10 +136,6 @@ class Post_tvCell: UITableViewCell {
                                                selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
                                                name: .AVPlayerItemFailedToPlayToEndTime,
                                                object: videoPlayer.currentItem)
-        
-        m_observer = Observer(self)
-        self.videoPlayer!.addObserver(m_observer!, forKeyPath: Keys.kRateKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
-//        self.videoPlayer!.currentItem!.addObserver(m_observer!, forKeyPath: Keys.kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
     /**

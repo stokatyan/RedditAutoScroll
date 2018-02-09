@@ -24,6 +24,16 @@ class RPost: NSObject {
     /** The index of the post's location in a feed. */
     let index: Int
     
+    private let kGifSuffix = ".gif"
+    private let kJpgSuffix = ".jpg"
+    private let kPngSuffix = ".png"
+    private let kGifvSuffix = ".gifv"
+    private let kYoutubePrefix = "https://www.youtube.com/"
+    private let kSubredditPrefix = "https://www.reddit.com/"
+    private let kGfycatPrefix = "https://gfycat.com/"
+    
+    private let kStatusKeyPath = "status"
+    
     private let _id: String?
     private let _is_video: Int?
     private var _num_comments: Int?
@@ -39,6 +49,7 @@ class RPost: NSObject {
     private var previewImage: UIImage?
     private var previewVideo: AVPlayer?
     private var previewVideoItem: AVPlayerItem?
+    private var previewDownloadCallback: (() -> Void)?
     
     private var _sourceWidth = 0
     private var _sourceHeight = 0
@@ -80,6 +91,25 @@ class RPost: NSObject {
 
         super.init()
         setPreviewLink()
+    }
+    
+    // MARK: KVO
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+
+        guard let keyPath = keyPath else {
+            return
+        }
+        
+        switch keyPath {
+        case kStatusKeyPath:
+            if let callback = previewDownloadCallback {
+                callback()
+            }
+        default:
+            break
+        }
+        
     }
     
     // MARK: get
@@ -131,19 +161,19 @@ class RPost: NSObject {
             return
         }
         
-        if (postUrl.suffix(Keys.kJpgSuffix.count) == Keys.kJpgSuffix) {
+        if (postUrl.suffix(kJpgSuffix.count) == kJpgSuffix) {
             m_previewType = .jpg
-        } else if (postUrl.suffix(Keys.kPngSuffix.count) == Keys.kPngSuffix) {
+        } else if (postUrl.suffix(kPngSuffix.count) == kPngSuffix) {
             m_previewType = .jpg
-        } else if (postUrl.suffix(Keys.kGifSuffix.count) == Keys.kGifSuffix) {
+        } else if (postUrl.suffix(kGifSuffix.count) == kGifSuffix) {
             m_previewType = .gif
-        } else if (postUrl.suffix(Keys.kGifvSuffix.count) == Keys.kGifvSuffix) {
+        } else if (postUrl.suffix(kGifvSuffix.count) == kGifvSuffix) {
             m_previewType = .video
-        } else if (postUrl.prefix(Keys.kYoutubePrefix.count) == Keys.kYoutubePrefix) {
+        } else if (postUrl.prefix(kYoutubePrefix.count) == kYoutubePrefix) {
             m_previewType = .youtube
-        } else if (postUrl.prefix(Keys.kSubredditPrefix.count) == Keys.kSubredditPrefix) {
+        } else if (postUrl.prefix(kSubredditPrefix.count) == kSubredditPrefix) {
             m_previewType = .subreddit
-        } else if (postUrl.prefix(Keys.kGfycatPrefix.count) == Keys.kGfycatPrefix) {
+        } else if (postUrl.prefix(kGfycatPrefix.count) == kGfycatPrefix) {
             m_previewType = .gif
         }
     }
@@ -154,8 +184,10 @@ class RPost: NSObject {
      - parameter callback: the callback that is exectuted after the preview image is downloaded. */
     private func downloadPreviewContent(url: URL, callback: @escaping () -> ()) {
         if (m_previewType == .video) {
+            previewDownloadCallback = {
+                callback()
+            }
             downloadPreviewVideo()
-            callback()
             return
         }
         
@@ -170,12 +202,8 @@ class RPost: NSObject {
                 switch self.m_previewType {
                 case .jpg:
                     self.previewImage = UIImage(data: data)
-                    callback()
-                    break
                 case .gif:
                     self.previewGif = FLAnimatedImage(gifData: data)
-                    callback()
-                    break
                 default:
                     callback()
                 }
@@ -187,17 +215,29 @@ class RPost: NSObject {
     func downloadPreviewVideo() {
         let videoURL = NSURL(string: previewLink!)
         previewVideo = AVPlayer(url: videoURL! as URL)
+        previewVideo?.addObserver(self, forKeyPath: kStatusKeyPath, options: NSKeyValueObservingOptions.new, context: nil)
     }
     
-    /**
-     Downloads and sets the preview from `previewLink`.
-     - parameter callback: a block that passes a boolean determining if the preview warrents reloading tableview. */
+    /** Downloads and sets the preview from `previewLink`. */
     func setPreview(callback: @escaping (Bool) -> ()) {
         if (previewLink == nil) {
             return
         }
         downloadPreviewContent(url: URL(string: previewLink!)!) {
-            callback(true)
+            switch self.m_previewType {
+            case .jpg:
+                callback(true)
+                break
+            case .gif:
+                callback(true)
+                break
+            case .video:
+                callback(true)
+                break
+            default:
+                callback(false)
+            }
+            
         }
     }
     

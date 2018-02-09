@@ -20,8 +20,6 @@
 		45D5FB511EDB9BF300856AFE /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5FB501EDB9BF300856AFE /* HomePresenter.swift */; };
 		45D5FB531EDBAB6300856AFE /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D5FB521EDBAB6300856AFE /* Feed.swift */; };
 		45F9F6A31EDE993E002807BA /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F9F6A21EDE993E002807BA /* Extensions.swift */; };
-		6221A919202D660A00F0DBF2 /* Observer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6221A918202D660A00F0DBF2 /* Observer.swift */; };
-		6248D3B1202D5ED500440035 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6248D3B0202D5ED500440035 /* Keys.swift */; };
 		76492383E0894DAA198452E9 /* libPods-AutoScroll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB9BB914A4CF4251378C0D49 /* libPods-AutoScroll.a */; };
 /* End PBXBuildFile section */
 
@@ -41,8 +39,6 @@
 		45D5FB501EDB9BF300856AFE /* HomePresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
 		45D5FB521EDBAB6300856AFE /* Feed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Feed.swift; sourceTree = "<group>"; };
 		45F9F6A21EDE993E002807BA /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		6221A918202D660A00F0DBF2 /* Observer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observer.swift; sourceTree = "<group>"; };
-		6248D3B0202D5ED500440035 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		62C855462007028400913C0B /* Bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bridging.h; sourceTree = "<group>"; };
 		925E76B10A5328947DCC5A8D /* Pods-AutoScroll.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoScroll.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AutoScroll/Pods-AutoScroll.debug.xcconfig"; sourceTree = "<group>"; };
 		9934E35849E3C4474F02E7B3 /* Pods-AutoScroll.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AutoScroll.release.xcconfig"; path = "Pods/Target Support Files/Pods-AutoScroll/Pods-AutoScroll.release.xcconfig"; sourceTree = "<group>"; };
@@ -107,8 +103,6 @@
 				455E8F681ECBDA02006E0B26 /* AppDelegate.swift */,
 				455E8F7E1ECBDE23006E0B26 /* RedAPI.swift */,
 				45F9F6A21EDE993E002807BA /* Extensions.swift */,
-				6248D3B0202D5ED500440035 /* Keys.swift */,
-				6221A918202D660A00F0DBF2 /* Observer.swift */,
 				455E8F6C1ECBDA02006E0B26 /* Main.storyboard */,
 				455E8F6F1ECBDA02006E0B26 /* Assets.xcassets */,
 				455E8F711ECBDA02006E0B26 /* LaunchScreen.storyboard */,
@@ -284,9 +278,7 @@
 				45C9D22C1ED66C7500A8E647 /* RPost.swift in Sources */,
 				4507F4281EDCDE920083DC7F /* HomeVC_tableview.swift in Sources */,
 				45D5FB511EDB9BF300856AFE /* HomePresenter.swift in Sources */,
-				6221A919202D660A00F0DBF2 /* Observer.swift in Sources */,
 				455E8F691ECBDA02006E0B26 /* AppDelegate.swift in Sources */,
-				6248D3B1202D5ED500440035 /* Keys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

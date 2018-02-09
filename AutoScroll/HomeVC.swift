@@ -67,13 +67,7 @@ extension HomeVC: HomeView {
     
     func reloadTableView(atIndex index: Int) {
         DispatchQueue.main.async {
-            let numRows = self._tableview.numberOfRows(inSection: 0)
-            if (index < numRows) {
-                self._tableview.reloadRows(at: [IndexPath(row: index, section: 0)], with: .left)
-            } else {
-                self._tableview.reloadData()
-            }
-            
+            self._tableview.reloadRows(at: [IndexPath(row: index, section: 0)], with: .left)
         }
     }
 
