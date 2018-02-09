@@ -36,8 +36,15 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: CellType.regular, for: indexPath) as! Post_tvCell
         cell.displayContents(of: redditPost)
-        
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let redditPost = cell as? Post_tvCell else {
+            return
+        }
+        
+        redditPost.removePreviewContent()
     }
     
 }

@@ -33,7 +33,7 @@ class Post_tvCell: UITableViewCell {
     
     // MARK: Life Cycle
 
-    /** Replay the video when it is finished. */
+    /** Replay the video when it is finished, or when it failed to finish. */
     @objc func playerItemDidReachEnd(notification: NSNotification) {
         if let playerItem: AVPlayerItem = notification.object as? AVPlayerItem {
             playerItem.seek(to: kCMTimeZero, completionHandler: nil)
@@ -41,6 +41,10 @@ class Post_tvCell: UITableViewCell {
                 player.play()
             }
         }
+        
+        let name = notification.name
+        print("\(name) : \(_title.text!)")
+
     }
     
     // MARK: Preview Media Setup
@@ -77,6 +81,7 @@ class Post_tvCell: UITableViewCell {
         if let layers = _imageview.layer.sublayers {
             for layer in layers {
                 layer.removeFromSuperlayer()
+                layer.removeAllAnimations()
             }
         }
     }
@@ -93,7 +98,6 @@ class Post_tvCell: UITableViewCell {
         
         let aspect = image.size.height / image.size.width
         setAspectRatio(aspect)
-        
         _imageview.image = image
     }
     
@@ -120,12 +124,17 @@ class Post_tvCell: UITableViewCell {
         let cellWidth = self.frame.size.width
         layer.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellWidth * aspectRatio)
 //        layer.frame = self._imageview.bounds
-        
+
         self._imageview.layer.addSublayer(layer)
         videoPlayer.play()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
-                                               name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,
+                                               name: .AVPlayerItemDidPlayToEndTime,
+                                               object: videoPlayer.currentItem)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(Post_tvCell.playerItemDidReachEnd(notification:)),
+                                               name: .AVPlayerItemFailedToPlayToEndTime,
                                                object: videoPlayer.currentItem)
     }
     
